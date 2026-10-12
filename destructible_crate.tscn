@@ -1,0 +1,63 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://destructible_crate.gd" id="1_crate_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_solid"]
+size = Vector2(40, 48)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
+size = Vector2(44, 52)
+
+[node name="DestructibleCrate" type="StaticBody2D"]
+collision_layer = 1
+collision_mask = 0
+script = ExtResource("1_crate_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -24)
+shape = SubResource("RectangleShape2D_solid")
+
+[node name="HitArea" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+position = Vector2(0, -24)
+shape = SubResource("RectangleShape2D_hit")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Box" type="ColorRect" parent="Visual"]
+offset_left = -20.0
+offset_top = -48.0
+offset_right = 20.0
+offset_bottom = 0.0
+color = Color(0.38, 0.26, 0.18, 1)
+
+[node name="Trim" type="ColorRect" parent="Visual"]
+offset_left = -18.0
+offset_top = -46.0
+offset_right = 18.0
+offset_bottom = -2.0
+color = Color(0.48, 0.34, 0.24, 1)
+
+[node name="Strap1" type="ColorRect" parent="Visual"]
+offset_left = -18.0
+offset_top = -28.0
+offset_right = 18.0
+offset_bottom = -20.0
+color = Color(0.75, 0.55, 0.25, 1)
+
+[node name="CoreSymbol" type="Polygon2D" parent="Visual"]
+color = Color(1, 0.4, 0.2, 0.8)
+polygon = PackedVector2Array(0, -32, 6, -24, 0, -16, -6, -24)
+
+[node name="HPLabel" type="Label" parent="."]
+offset_left = -25.0
+offset_top = -65.0
+offset_right = 25.0
+offset_bottom = -48.0
+theme_override_colors/font_color = Color(1, 0.8, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "HP: 2"
+horizontal_alignment = 1

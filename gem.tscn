@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://gem.gd" id="1_gem_script"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gem"]
+radius = 14.0
+
+[node name="Gem" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_gem_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gem")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="OuterGlow" type="Polygon2D" parent="Visual"]
+color = Color(0.1, 0.8, 1, 0.25)
+polygon = PackedVector2Array(0, -15, 12, 0, 0, 15, -12, 0)
+
+[node name="Body" type="Polygon2D" parent="Visual"]
+color = Color(0.2, 0.85, 1, 1)
+polygon = PackedVector2Array(0, -10, 8, 0, 0, 10, -8, 0)
+
+[node name="InnerHighlight" type="Polygon2D" parent="Visual"]
+color = Color(0.8, 1, 1, 1)
+polygon = PackedVector2Array(0, -5, 4, 0, 0, 5, -4, 0)

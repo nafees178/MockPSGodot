@@ -1,7 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene format=3 uid="uid://tie4xs4w3xaf"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_player"]
-[ext_resource type="SpriteFrames" path="res://player_sprite_frames.tres" id="2_frames"]
+[ext_resource type="Script" uid="uid://c14f50p5rpcrm" path="res://player.gd" id="1_player"]
+[ext_resource type="SpriteFrames" uid="uid://rb4jbddmutym" path="res://player_sprite_frames.tres" id="2_frames"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1"]
 radius = 12.0
@@ -10,16 +10,15 @@ height = 54.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(30, 40)
 
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=996002289]
 collision_layer = 2
-collision_mask = 1
 script = ExtResource("1_player")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1070496582]
 position = Vector2(0, -27)
 shape = SubResource("CapsuleShape2D_1")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=497705030]
 texture_filter = 1
 position = Vector2(0, -48)
 scale = Vector2(0.15, 0.15)
@@ -27,16 +26,17 @@ sprite_frames = ExtResource("2_frames")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1184245997]
 position = Vector2(0, -35)
-zoom = Vector2(2.0, 2.0)
-position_smoothing_enabled = true
+zoom = Vector2(2, 2)
+process_callback = 0
+position_smoothing_enabled = false
 
-[node name="AttackArea" type="Area2D" parent="."]
+[node name="AttackArea" type="Area2D" parent="." unique_id=588871445]
 collision_layer = 4
 collision_mask = 8
 
-[node name="AttackCollision" type="CollisionShape2D" parent="AttackArea"]
+[node name="AttackCollision" type="CollisionShape2D" parent="AttackArea" unique_id=1607265018]
 position = Vector2(20, -27)
 shape = SubResource("RectangleShape2D_1")
 disabled = true
