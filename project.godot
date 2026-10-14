@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="InterIITMock"
-run/main_scene="res://main.tscn"
+run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+McpInteractionServer="*res://mcp_interaction_server.gd"
 
 [display]
 
@@ -21,7 +25,6 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
-window/vsync/vsync_mode=1
 
 [dotnet]
 
@@ -78,8 +81,3 @@ common/physics_interpolation=true
 textures/canvas_textures/default_texture_filter=0
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
-
-[autoload]
-
-McpInteractionServer="*res://mcp_interaction_server.gd"
-
