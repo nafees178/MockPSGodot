@@ -126,6 +126,8 @@ func _ready() -> void:
 		camera.reset_smoothing()
 	
 	_warm_up_textures()
+	if animated_sprite:
+		animated_sprite.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	change_state(State.IDLE)
 	_play_anim("idle")
 
@@ -420,6 +422,7 @@ func _end_attack() -> void:
 			change_state(State.IDLE)
 	else:
 		change_state(State.FALL)
+	_update_animation()
 
 func change_state(new_state: State) -> void:
 	if current_state == new_state:
@@ -471,6 +474,7 @@ func _play_anim(anim_to_play: String) -> void:
 	var cfg = ANIM_CONFIGS.get(anim_to_play, ANIM_CONFIGS["idle"])
 	animated_sprite.scale = cfg["scale"]
 	animated_sprite.position = cfg["offset"]
+	animated_sprite.reset_physics_interpolation()
 
 func _update_animation() -> void:
 	if not animated_sprite:
@@ -510,3 +514,4 @@ func _on_animation_finished() -> void:
 					change_state(State.IDLE)
 				else:
 					change_state(State.FALL)
+				_update_animation()
