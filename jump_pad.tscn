@@ -1,0 +1,75 @@
+[gd_scene format=3 uid="uid://bsmrd2jevu1a6"]
+
+[ext_resource type="Texture2D" uid="uid://bugccu5cu50mw" path="res://TileMap/16x16 2D Platformer - Programmer Art/Animations/Jump Pad/Jump Pad - Sprite sheet.png" id="1_526ql"]
+[ext_resource type="Script" uid="uid://bmuh4a0l6srrn" path="res://jump_pad.gd" id="1_cysje"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cysje"]
+atlas = ExtResource("1_526ql")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dd87t"]
+atlas = ExtResource("1_526ql")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h7ut2"]
+atlas = ExtResource("1_526ql")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hls3s"]
+atlas = ExtResource("1_526ql")
+region = Rect2(48, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oeeh7"]
+atlas = ExtResource("1_526ql")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ipo01"]
+atlas = ExtResource("1_526ql")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tprd0"]
+animations = [{
+"frames": [{
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_cysje")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_dd87t")
+}, {
+"duration": 1.49,
+"texture": SubResource("AtlasTexture_h7ut2")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_hls3s")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_oeeh7")
+}],
+"loop": 1,
+"name": &"bounce",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ipo01")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nbig2"]
+size = Vector2(14, 2)
+
+[node name="Jump Pad" type="Area2D" unique_id=200945990]
+script = ExtResource("1_cysje")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1615252399]
+sprite_frames = SubResource("SpriteFrames_tprd0")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1203123004]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_nbig2")
+
+[connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

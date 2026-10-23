@@ -1,0 +1,55 @@
+[gd_scene format=3 uid="uid://d2u73m0qgr1nd"]
+
+[ext_resource type="Script" uid="uid://bnyjhkvohntaf" path="res://small_saw.gd" id="1_w2mbo"]
+[ext_resource type="Texture2D" uid="uid://gx7lw3txrth4" path="res://TileMap/16x16 2D Platformer - Programmer Art/Animations/Sawblades/Small Sawblades/Small Sawblades - Sprite sheet.png" id="2_y2hyt"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6yl4u"]
+atlas = ExtResource("2_y2hyt")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1bbis"]
+atlas = ExtResource("2_y2hyt")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jsm24"]
+atlas = ExtResource("2_y2hyt")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nja8f"]
+atlas = ExtResource("2_y2hyt")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cxyel"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6yl4u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1bbis")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jsm24")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nja8f")
+}],
+"loop": 1,
+"name": &"SmallSaw",
+"speed": 16.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tprd0"]
+
+[node name="SmallSaw" type="Area2D" unique_id=142149957]
+script = ExtResource("1_w2mbo")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=922732127]
+sprite_frames = SubResource("SpriteFrames_cxyel")
+animation = &"SmallSaw"
+frame_progress = 0.86440474
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=841409496]
+shape = SubResource("CircleShape2D_tprd0")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=369001115]

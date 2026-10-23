@@ -355,7 +355,7 @@ resource_local_to_scene = true
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cxyel"]
 size = Vector2(66, 20)
 
-[node name="Node2D" type="Node2D" unique_id=154268388]
+[node name="Level 1" type="Node2D" unique_id=154268388]
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1991028108]
 position = Vector2(1325.9999, -88)

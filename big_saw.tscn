@@ -1,0 +1,56 @@
+[gd_scene format=3 uid="uid://c44yu8k7cvivf"]
+
+[ext_resource type="Script" uid="uid://mlnxm7ny62je" path="res://big_saw.gd" id="1_f13d7"]
+[ext_resource type="Texture2D" uid="uid://btkpq4nx5d5rm" path="res://TileMap/16x16 2D Platformer - Programmer Art/Animations/Sawblades/Big Sawblades/Big Sawblades.png" id="2_8kajq"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_cfp1c"]
+atlas = ExtResource("2_8kajq")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wyxtp"]
+atlas = ExtResource("2_8kajq")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xlajb"]
+atlas = ExtResource("2_8kajq")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0oony"]
+atlas = ExtResource("2_8kajq")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cxyel"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cfp1c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wyxtp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xlajb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0oony")
+}],
+"loop": 1,
+"name": &"big saw",
+"speed": 12.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_tprd0"]
+radius = 20.024984
+
+[node name="BigSaw" type="Area2D" unique_id=1235727445]
+script = ExtResource("1_f13d7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=398134902]
+sprite_frames = SubResource("SpriteFrames_cxyel")
+animation = &"big saw"
+frame_progress = 0.23416364
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=2095799233]
+shape = SubResource("CircleShape2D_tprd0")
+
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." unique_id=403047052]
