@@ -59,11 +59,19 @@ func _trigger_transition() -> void:
 	var font = load("res://audio/kenvector_future.ttf") as Font
 	
 	var label = Label.new()
-	label.text = "LEVEL 1 CLEARED!\nENTERING LEVEL 2..."
+	var current_scene = get_tree().current_scene
+	var is_lvl2 = (current_scene and ("2" in current_scene.name or "Level2" in current_scene.name)) or next_scene_path == "res://main_menu.tscn"
+	
+	if is_lvl2:
+		label.text = "LEVEL 2 CLEARED!\nALL MISSIONS COMPLETE - VICTORY!"
+		label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2, 1.0))
+	else:
+		label.text = "LEVEL 1 CLEARED!\nENTERING LEVEL 2..."
+		label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.6, 1.0))
+		
 	if font:
 		label.add_theme_font_override("font", font)
 	label.add_theme_font_size_override("font_size", 16)
-	label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.6, 1.0))
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -73,7 +81,7 @@ func _trigger_transition() -> void:
 	var t = create_tween()
 	t.parallel().tween_property(overlay, "modulate:a", 1.0, 0.6)
 	t.parallel().tween_property(label, "modulate:a", 1.0, 0.6)
-	t.tween_interval(1.2)
+	t.tween_interval(1.5)
 	t.chain().tween_callback(func():
 		get_tree().change_scene_to_file(next_scene_path)
 	)

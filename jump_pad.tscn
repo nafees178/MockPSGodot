@@ -59,9 +59,11 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nbig2"]
-size = Vector2(14, 2)
+size = Vector2(14, 8)
 
 [node name="Jump Pad" type="Area2D" unique_id=200945990]
+collision_layer = 0
+collision_mask = 2
 script = ExtResource("1_cysje")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1615252399]
@@ -69,7 +71,7 @@ sprite_frames = SubResource("SpriteFrames_tprd0")
 animation = &"idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1203123004]
-position = Vector2(0, 2)
+position = Vector2(0, -2)
 shape = SubResource("RectangleShape2D_nbig2")
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

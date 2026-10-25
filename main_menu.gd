@@ -241,6 +241,7 @@ func _on_deploy_pressed() -> void:
 	if is_transitioning:
 		return
 	is_transitioning = true
+	SettingsManager.reset_game_state()
 	
 	audio_manager.play_deploy()
 	

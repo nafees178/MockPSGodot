@@ -104,6 +104,9 @@ func _spawn_katana_drop() -> void:
 	kt.chain().tween_property(katana_node, "modulate:a", 0.0, 0.3)
 	kt.chain().tween_callback(katana_node.queue_free)
 	
+	# Record katana unlocked in global session state
+	SettingsManager.has_katana = true
+	
 	# Unlock player katana!
 	var players = get_tree().get_nodes_in_group("player")
 	var p: Player = null

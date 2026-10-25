@@ -242,7 +242,17 @@ animations = [{
 radius = 6.0
 height = 16.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hitbox"]
+radius = 5.0
+height = 14.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hurtbox"]
+radius = 8.0
+height = 18.0
+
 [node name="WalkingEnemy" type="CharacterBody2D" unique_id=1493332609]
+collision_layer = 16
+collision_mask = 1
 script = ExtResource("1_jliei")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1480574222]
@@ -255,3 +265,16 @@ shape = SubResource("CapsuleShape2D_tprd0")
 [node name="RayCast2D" type="RayCast2D" parent="." unique_id=477635395]
 position = Vector2(-8, 8)
 target_position = Vector2(0, 15)
+[node name="Hitbox" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="HitboxShape" type="CollisionShape2D" parent="Hitbox"]
+shape = SubResource("CapsuleShape2D_hitbox")
+
+[node name="Hurtbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 4
+
+[node name="HurtboxShape" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("CapsuleShape2D_hurtbox")

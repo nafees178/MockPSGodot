@@ -1,40 +1,53 @@
+class_name SmallSaw
 extends Area2D
 
-# Small saw speed (faster than the Big Saw's 200.0)
-@export var speed: float = 300.0
+# Controlled hazard speed
+@export var speed: float = 65.0
 
-# Direction: -1 moves LEFT (towards player), 1 moves RIGHT
-@export var direction: float = -1.0
+# Limited range: 3 to 5 units (default 4 units = 64 pixels)
+@export var patrol_units: float = 4.0
 
-# Faster rotation speed because it's smaller
-@export var rotation_speed: float = 20.0
+@export var rotation_speed: float = 16.0
 
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
-@onready var notifier: VisibleOnScreenNotifier2D = $VisibleOnScreenNotifier2D
+
+var origin_x: float = 0.0
+var move_direction: float = -1.0 # Moves left initially
+var max_travel_dist: float = 64.0
 
 func _ready() -> void:
-	# Automatically handle deleting when off-screen and collisions with player
-	notifier.screen_exited.connect(_on_screen_exited)
+	collision_layer = 0
+	collision_mask = 2 # Player layer
 	body_entered.connect(_on_body_entered)
 	
-	if animated_sprite.sprite_frames:
-		animated_sprite.play("default")
+	origin_x = position.x
+	max_travel_dist = patrol_units * 16.0 # 16px per unit
+	
+	if animated_sprite and animated_sprite.sprite_frames:
+		if animated_sprite.sprite_frames.has_animation("SmallSaw"):
+			animated_sprite.play("SmallSaw")
+		elif animated_sprite.sprite_frames.has_animation("default"):
+			animated_sprite.play("default")
 
 func _process(delta: float) -> void:
-	# Move horizontally across the screen faster
-	position.x += speed * direction * delta
+	# Spin the saw blade
+	if animated_sprite:
+		animated_sprite.rotation += rotation_speed * delta
 	
-	# Spin the saw blade visually
-	animated_sprite.rotation += rotation_speed * delta
+	# Patrol horizontally within [origin_x - max_travel_dist, origin_x]
+	position.x += speed * move_direction * delta
+	
+	if move_direction < 0.0 and position.x <= origin_x - max_travel_dist:
+		position.x = origin_x - max_travel_dist
+		move_direction = 1.0 # Reverse and move right
+	elif move_direction > 0.0 and position.x >= origin_x:
+		position.x = origin_x
+		move_direction = -1.0 # Reverse and move left
 
 func _on_body_entered(body: Node2D) -> void:
-	# Check if it hits the player
-	if body.is_in_group("player") or body.has_method("take_damage") or body.has_method("die"):
-		if body.has_method("take_damage"):
-			body.take_damage()
-		elif body.has_method("die"):
-			body.die()
-
-func _on_screen_exited() -> void:
-	# Automatically free memory once it goes off-screen
-	queue_free()
+	if body is Player or body.has_method("respawn"):
+		body.respawn()
+	elif body.has_method("die"):
+		body.die()
+	elif body.has_method("take_damage"):
+		body.take_damage()

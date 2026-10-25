@@ -70,6 +70,7 @@ var spawn_point: Vector2 = Vector2.ZERO
 
 var coyote_timer: float = 0.0
 var jump_buffer_timer: float = 0.0
+var bounce_grace_timer: float = 0.0
 var dash_timer: float = 0.0
 var dash_cooldown_timer: float = 0.0
 var attack_timer: float = 0.0
@@ -127,6 +128,10 @@ func _ready() -> void:
 		camera.limit_bottom = 140
 		camera.reset_smoothing()
 	
+	# Restore equipment state from previous level
+	if SettingsManager.has_katana:
+		unlock_katana()
+
 	_warm_up_textures()
 	if animated_sprite:
 		animated_sprite.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
@@ -206,6 +211,7 @@ func _update_timers(delta: float) -> void:
 
 	jump_buffer_timer = max(0.0, jump_buffer_timer - delta)
 	dash_cooldown_timer = max(0.0, dash_cooldown_timer - delta)
+	bounce_grace_timer = max(0.0, bounce_grace_timer - delta)
 
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer_timer = jump_buffer_time
@@ -263,8 +269,8 @@ func _process_normal_movement(delta: float) -> void:
 			jumped.emit()
 			change_state(State.JUMP)
 
-	# Variable jump height
-	if not is_on_floor() and velocity.y < min_jump_velocity:
+	# Variable jump height - bypassed if actively bouncing from a jump pad
+	if bounce_grace_timer <= 0.0 and not is_on_floor() and velocity.y < min_jump_velocity:
 		if not Input.is_action_pressed("jump"):
 			velocity.y = min_jump_velocity
 
@@ -360,6 +366,8 @@ func _handle_strike_hit(area: Area2D, damage: int) -> void:
 		strike_hit_targets.append(target)
 		if target.has_method("take_damage"):
 			target.take_damage(damage)
+		elif area.has_method("take_damage"):
+			area.take_damage(damage)
 
 func _on_attack_area_entered(area: Area2D) -> void:
 	if current_state == State.PUNCH or current_state == State.KATANA:
@@ -383,8 +391,18 @@ func equip_weapon(weapon: WeaponType) -> void:
 	current_weapon = weapon
 	weapon_changed.emit(current_weapon)
 
+func bounce(bounce_vel: float) -> void:
+	velocity.y = bounce_vel
+	coyote_timer = 0.0
+	jump_buffer_timer = 0.0
+	bounce_grace_timer = 0.45 # Protect bounce from variable jump cutoff
+	position.y -= 4.0 # Break floor snap immediately
+	change_state(State.JUMP)
+	_play_anim("jump_up")
+
 func unlock_katana() -> void:
 	has_katana = true
+	SettingsManager.has_katana = true
 	equip_weapon(WeaponType.KATANA)
 
 func start_dash() -> void:
@@ -458,6 +476,12 @@ func change_state(new_state: State) -> void:
 # --- Checkpoint & Respawn ---
 func set_checkpoint(pos: Vector2) -> void:
 	spawn_point = pos
+
+func take_damage(_amount: int = 1) -> void:
+	respawn()
+
+func die() -> void:
+	respawn()
 
 func respawn() -> void:
 	velocity = Vector2.ZERO

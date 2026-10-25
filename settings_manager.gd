@@ -14,6 +14,12 @@ static var target_fps: int = 60 # 0 = unlimited, 60, 120, 144
 static var screen_shake: bool = true
 static var show_timer: bool = true
 
+# Equipment & Session persistence across levels
+static var has_katana: bool = false
+
+static func reset_game_state() -> void:
+	has_katana = false
+
 static func load_settings() -> void:
 	var cfg = ConfigFile.new()
 	var err = cfg.load(SAVE_PATH)
