@@ -1,16 +1,16 @@
-
-
 extends Node2D
 
 ## Time in seconds it takes for the platform to move from one side to the other
-@export var duration: float = 2.0
+@export var duration: float = 3.0
 
-@onready var path_follow: PathFollow2D = $Path2D/PathFollow2D
+@onready var path_follow: PathFollow2D = get_node_or_null("Path2D/PathFollow2D")
 
 func _ready() -> void:
 	start_platform_movement()
 
 func start_platform_movement() -> void:
+	if not path_follow:
+		return
 	# Create a tween that loops infinitely
 	var tween: Tween = create_tween().set_loops()
 	

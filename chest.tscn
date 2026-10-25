@@ -1,0 +1,36 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://chest.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://TileMap/Dungeon Tile Set.png" id="2_texture"]
+[ext_resource type="FontFile" path="res://audio/kenvector_future.ttf" id="3_font"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(28, 20)
+
+[node name="TreasureChest" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 0)
+shape = SubResource("RectangleShape2D_1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+region_enabled = true
+region_rect = Rect2(192, 144, 16, 16)
+
+[node name="PromptLabel" type="Label" parent="."]
+offset_left = -60.0
+offset_top = -24.0
+offset_right = 60.0
+offset_bottom = -10.0
+theme_override_colors/font_color = Color(1, 0.9, 0.3, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 8
+text = "[E] OPEN CHEST"
+horizontal_alignment = 1

@@ -271,7 +271,7 @@ func _on_deploy_pressed() -> void:
 	# 5. Scene switch
 	t.chain().tween_interval(0.08)
 	t.chain().tween_callback(func():
-		get_tree().change_scene_to_file("res://main.tscn")
+		get_tree().change_scene_to_file("res://level1.tscn")
 	)
 
 func _open_modal(modal: Control) -> void:

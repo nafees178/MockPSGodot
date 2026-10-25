@@ -29,25 +29,26 @@ enum WeaponType {
 # --- Weapon System ---
 @export_group("Equipment")
 @export var current_weapon: WeaponType = WeaponType.UNARMED
+@export var has_katana: bool = false
 
 # --- Movement Parameters ---
 @export_group("Movement")
-@export var speed: float = 190.0
-@export var walk_speed: float = 110.0
-@export var acceleration: float = 1600.0
-@export var friction: float = 1400.0
-@export var air_acceleration: float = 1000.0
-@export var air_friction: float = 300.0
+@export var speed: float = 140.0
+@export var walk_speed: float = 85.0
+@export var acceleration: float = 1200.0
+@export var friction: float = 1100.0
+@export var air_acceleration: float = 800.0
+@export var air_friction: float = 250.0
 
 @export_group("Jump")
-@export var jump_velocity: float = -380.0
-@export var min_jump_velocity: float = -140.0
+@export var jump_velocity: float = -280.0
+@export var min_jump_velocity: float = -110.0
 @export var fall_gravity_multiplier: float = 1.6
 @export var coyote_time: float = 0.14
 @export var jump_buffer_time: float = 0.14
 
 @export_group("Dash")
-@export var dash_speed: float = 460.0
+@export var dash_speed: float = 300.0
 @export var dash_duration: float = 0.20
 @export var dash_cooldown: float = 0.35
 
@@ -80,24 +81,24 @@ var hit_2_fired: bool = false
 var strike_hit_targets: Array[Node2D] = []
 
 # Collider sizing
-const STAND_HEIGHT: float = 54.0
-const STAND_POS_Y: float = -27.0
-const CROUCH_HEIGHT: float = 28.0
-const CROUCH_POS_Y: float = -14.0
+const STAND_HEIGHT: float = 28.0
+const STAND_POS_Y: float = -14.0
+const CROUCH_HEIGHT: float = 16.0
+const CROUCH_POS_Y: float = -8.0
 
 # --- Animation Normalization ---
 const ANIM_CONFIGS: Dictionary = {
-	"idle": { "scale": Vector2(0.148, 0.148), "offset": Vector2(0, -47.2) },
-	"run": { "scale": Vector2(0.138, 0.138), "offset": Vector2(0, -44.0) },
-	"walk": { "scale": Vector2(0.145, 0.145), "offset": Vector2(0, -34.7) },
-	"punch": { "scale": Vector2(0.186, 0.186), "offset": Vector2(0, -31.4) },
-	"air_attack": { "scale": Vector2(0.186, 0.186), "offset": Vector2(0, -40.7) },
-	"katana": { "scale": Vector2(0.186, 0.186), "offset": Vector2(0, -59.3) },
-	"jump_up": { "scale": Vector2(0.144, 0.144), "offset": Vector2(0, -44.0) },
-	"fall": { "scale": Vector2(0.144, 0.144), "offset": Vector2(0, -44.0) },
-	"dash": { "scale": Vector2(0.138, 0.138), "offset": Vector2(0, -44.0) },
-	"crouch_idle": { "scale": Vector2(0.148, 0.148), "offset": Vector2(0, -47.2) },
-	"crouch_walk": { "scale": Vector2(0.148, 0.148), "offset": Vector2(0, -47.2) },
+	"idle": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
+	"run": { "scale": Vector2(0.070, 0.070), "offset": Vector2(0, -22.4) },
+	"walk": { "scale": Vector2(0.074, 0.074), "offset": Vector2(0, -17.7) },
+	"punch": { "scale": Vector2(0.095, 0.095), "offset": Vector2(0, -16.0) },
+	"air_attack": { "scale": Vector2(0.095, 0.095), "offset": Vector2(0, -20.8) },
+	"katana": { "scale": Vector2(0.095, 0.095), "offset": Vector2(0, -30.2) },
+	"jump_up": { "scale": Vector2(0.073, 0.073), "offset": Vector2(0, -22.4) },
+	"fall": { "scale": Vector2(0.073, 0.073), "offset": Vector2(0, -22.4) },
+	"dash": { "scale": Vector2(0.070, 0.070), "offset": Vector2(0, -22.4) },
+	"crouch_idle": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
+	"crouch_walk": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
 }
 
 func _ready() -> void:
@@ -118,11 +119,12 @@ func _ready() -> void:
 	
 	if camera:
 		camera.process_callback = Camera2D.CAMERA2D_PROCESS_PHYSICS
-		camera.position_smoothing_enabled = false
-		camera.limit_left = -300
-		camera.limit_top = -400
-		camera.limit_right = 3700
-		camera.limit_bottom = 620
+		camera.position_smoothing_enabled = true
+		camera.position_smoothing_speed = 8.0
+		camera.limit_left = -80
+		camera.limit_top = -320
+		camera.limit_right = 2440
+		camera.limit_bottom = 140
 		camera.reset_smoothing()
 	
 	_warm_up_textures()
@@ -152,13 +154,15 @@ func _warm_up_textures() -> void:
 	get_tree().create_timer(0.08).timeout.connect(warm_box.queue_free)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Quick weapon swap (Tab or Number keys 1, 2)
+	# Quick weapon swap (Tab or Number keys 1, 2) - only if katana is unlocked
 	if event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_TAB or event.keycode == KEY_1:
-			var next_weapon = WeaponType.KATANA if current_weapon == WeaponType.UNARMED else WeaponType.UNARMED
-			equip_weapon(next_weapon)
+			if has_katana:
+				var next_weapon = WeaponType.KATANA if current_weapon == WeaponType.UNARMED else WeaponType.UNARMED
+				equip_weapon(next_weapon)
 		elif event.keycode == KEY_2:
-			equip_weapon(WeaponType.KATANA)
+			if has_katana:
+				equip_weapon(WeaponType.KATANA)
 
 func _physics_process(delta: float) -> void:
 	_update_timers(delta)
@@ -184,7 +188,7 @@ func is_under_ceiling() -> bool:
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsShapeQueryParameters2D.new()
 	var standing_shape = CapsuleShape2D.new()
-	standing_shape.radius = 11.0
+	standing_shape.radius = 5.5
 	standing_shape.height = STAND_HEIGHT - 2.0
 	query.shape = standing_shape
 	query.transform = Transform2D(0.0, global_position + Vector2(0, STAND_POS_Y))
@@ -312,21 +316,21 @@ func _process_attack_state(delta: float) -> void:
 		# Punch 1 (Left jab at ~0.12s)
 		if attack_timer >= 0.12 and not hit_1_fired:
 			hit_1_fired = true
-			_fire_strike(Vector2(20.0, -25.0), Vector2(30.0, 36.0), 1)
+			_fire_strike(Vector2(10.0, -13.0), Vector2(16.0, 18.0), 1)
 		# Punch 2 (Right cross at ~0.38s)
 		elif attack_timer >= 0.38 and not hit_2_fired:
 			hit_2_fired = true
-			_fire_strike(Vector2(24.0, -25.0), Vector2(34.0, 36.0), 1)
+			_fire_strike(Vector2(12.0, -13.0), Vector2(18.0, 18.0), 1)
 
 	elif current_state == State.KATANA:
 		# Katana Slash 1 (First sweep at ~0.14s)
 		if attack_timer >= 0.14 and not hit_1_fired:
 			hit_1_fired = true
-			_fire_strike(Vector2(28.0, -27.0), Vector2(48.0, 44.0), 2)
+			_fire_strike(Vector2(14.0, -14.0), Vector2(25.0, 22.0), 2)
 		# Katana Slash 2 (Second sweep at ~0.40s)
 		elif attack_timer >= 0.40 and not hit_2_fired:
 			hit_2_fired = true
-			_fire_strike(Vector2(32.0, -27.0), Vector2(52.0, 44.0), 2)
+			_fire_strike(Vector2(16.0, -14.0), Vector2(27.0, 22.0), 2)
 
 	if attack_timer >= attack_timeout:
 		_end_attack()
@@ -374,8 +378,14 @@ func perform_attack() -> void:
 			pass
 
 func equip_weapon(weapon: WeaponType) -> void:
+	if weapon == WeaponType.KATANA and not has_katana:
+		return
 	current_weapon = weapon
 	weapon_changed.emit(current_weapon)
+
+func unlock_katana() -> void:
+	has_katana = true
+	equip_weapon(WeaponType.KATANA)
 
 func start_dash() -> void:
 	var input_x = _get_horizontal_input()
