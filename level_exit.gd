@@ -15,6 +15,13 @@ func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 2 # Player layer
 	body_entered.connect(_on_body_entered)
+	if prompt_label:
+		if next_scene_path == "res://main_menu.tscn":
+			prompt_label.text = "MISSION COMPLETE"
+		elif "3" in next_scene_path:
+			prompt_label.text = "LEVEL 2 EXIT"
+		elif "2" in next_scene_path:
+			prompt_label.text = "LEVEL 1 EXIT"
 
 func _process(delta: float) -> void:
 	time_passed += delta
@@ -60,11 +67,16 @@ func _trigger_transition() -> void:
 	
 	var label = Label.new()
 	var current_scene = get_tree().current_scene
-	var is_lvl2 = (current_scene and ("2" in current_scene.name or "Level2" in current_scene.name)) or next_scene_path == "res://main_menu.tscn"
+	var sname = current_scene.name if current_scene else ""
+	var is_lvl3 = "3" in sname or "Level3" in sname or next_scene_path == "res://main_menu.tscn"
+	var is_lvl2 = ("2" in sname or "Level2" in sname or "Level_2" in sname) and not is_lvl3
 	
-	if is_lvl2:
-		label.text = "LEVEL 2 CLEARED!\nALL MISSIONS COMPLETE - VICTORY!"
+	if is_lvl3:
+		label.text = "LEVEL 3 CLEARED!\nALL MISSIONS COMPLETE - VICTORY!"
 		label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2, 1.0))
+	elif is_lvl2:
+		label.text = "LEVEL 2 CLEARED!\nENTERING LEVEL 3..."
+		label.add_theme_color_override("font_color", Color(1.0, 0.65, 0.3, 1.0))
 	else:
 		label.text = "LEVEL 1 CLEARED!\nENTERING LEVEL 2..."
 		label.add_theme_color_override("font_color", Color(0.3, 1.0, 0.6, 1.0))

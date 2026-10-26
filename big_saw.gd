@@ -24,7 +24,9 @@ func _ready() -> void:
 	max_travel_dist = patrol_units * 16.0 # 16px per unit
 	
 	if animated_sprite and animated_sprite.sprite_frames:
-		if animated_sprite.sprite_frames.has_animation("default"):
+		if animated_sprite.sprite_frames.has_animation("big saw"):
+			animated_sprite.play("big saw")
+		elif animated_sprite.sprite_frames.has_animation("default"):
 			animated_sprite.play("default")
 
 func _process(delta: float) -> void:
