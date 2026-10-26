@@ -12,15 +12,13 @@
 [ext_resource type="PackedScene" uid="uid://bsmrd2jevu1a6" path="res://jump_pad.tscn" id="9_fy7lv"]
 [ext_resource type="PackedScene" uid="uid://d2u73m0qgr1nd" path="res://small_saw.tscn" id="10_n8hyc"]
 [ext_resource type="PackedScene" uid="uid://c44yu8k7cvivf" path="res://big_saw.tscn" id="11_eiivm"]
-
-[ext_resource type="Script" path="res://level2.gd" id="ext_level2_script"]
+[ext_resource type="PackedScene" path="res://signboard_checkpoint.tscn" id="ext_checkpoint_scene"]
+[ext_resource type="PackedScene" path="res://level_exit.tscn" id="ext_exit_scene"]
+[ext_resource type="Script" uid="uid://cntv3v3gilmt8" path="res://level2.gd" id="ext_level2_script"]
 [ext_resource type="PackedScene" uid="uid://tie4xs4w3xaf" path="res://player.tscn" id="ext_player_scene"]
 [ext_resource type="Script" uid="uid://c0wqjbwk0timc" path="res://hazard_spikes.gd" id="ext_spikes_script"]
-[ext_resource type="PackedScene" path="res://signboard_checkpoint.tscn" id="ext_checkpoint_scene"]
-[ext_resource type="Script" path="res://saw_spawner.gd" id="ext_saw_spawner_script"]
-[ext_resource type="PackedScene" path="res://level_exit.tscn" id="ext_exit_scene"]
+[ext_resource type="Script" uid="uid://c67hlfcimjd8a" path="res://void_hazard.gd" id="ext_void_hazard_script"]
 
-[ext_resource type="Script" path="res://void_hazard.gd" id="ext_void_hazard_script"]
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ibitd"]
 texture = ExtResource("1_oyhbj")
 1:1/0 = 0
@@ -85,6 +83,7 @@ texture = ExtResource("1_oyhbj")
 18:4/0/physics_layer_0/polygon_0/one_way_margin = 2.0
 1:5/0 = 0
 3:5/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_wos53"]
 texture = ExtResource("2_lgjvw")
 3:1/0 = 0
@@ -173,6 +172,7 @@ texture = ExtResource("2_lgjvw")
 9:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 10:8/0 = 0
 10:8/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_t0ole"]
 texture = ExtResource("3_n8hyc")
 0:0/0 = 0
@@ -348,6 +348,7 @@ texture = ExtResource("6_4x2ic")
 10:15/0 = 0
 11:15/0 = 0
 12:15/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7v052"]
 texture = ExtResource("7_576va")
 1:1/0 = 0
@@ -380,6 +381,7 @@ texture = ExtResource("7_576va")
 7:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 9:4/0 = 0
 9:4/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p4ecc"]
 texture = ExtResource("8_eiivm")
 0:0/0 = 0
@@ -451,10 +453,11 @@ scale = Vector2(0.6857624, 0.63272136)
 [node name="SmallSaw" parent="." unique_id=1249845449 instance=ExtResource("10_n8hyc")]
 position = Vector2(1640.0001, -23)
 scale = Vector2(-0.6386975, 0.5425962)
-[node name="SkyLayer" type="CanvasLayer" parent="."]
+
+[node name="SkyLayer" type="CanvasLayer" parent="." unique_id=1284568378]
 layer = -100
 
-[node name="SkyColor" type="ColorRect" parent="SkyLayer"]
+[node name="SkyColor" type="ColorRect" parent="SkyLayer" unique_id=1463440534]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -462,68 +465,69 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.160784, 0.678431, 1, 1)
 
-[node name="Player" parent="." instance=ExtResource("ext_player_scene")]
+[node name="Player" parent="." unique_id=281647226 instance=ExtResource("ext_player_scene")]
 position = Vector2(24, -30)
 
-[node name="PitHazard" type="Area2D" parent="."]
+[node name="PitHazard" type="Area2D" parent="." unique_id=216187423]
 position = Vector2(850, 180)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_spikes_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PitHazard"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PitHazard" unique_id=494721540]
 shape = SubResource("RectangleShape2D_pit")
 
-[node name="SpikesHazard1" type="Area2D" parent="."]
+[node name="SpikesHazard1" type="Area2D" parent="." unique_id=1366531257]
 position = Vector2(128, -8)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_spikes_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard1" unique_id=1945720338]
 shape = SubResource("RectangleShape2D_spikes_32")
 
-[node name="SpikesHazard2" type="Area2D" parent="."]
+[node name="SpikesHazard2" type="Area2D" parent="." unique_id=304893275]
 position = Vector2(280, -8)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_spikes_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard2" unique_id=1502306491]
 shape = SubResource("RectangleShape2D_spikes_32")
 
-[node name="SpikesHazard3" type="Area2D" parent="."]
+[node name="SpikesHazard3" type="Area2D" parent="." unique_id=132396417]
 position = Vector2(1504, -24)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_spikes_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard3"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikesHazard3" unique_id=1987053351]
 shape = SubResource("RectangleShape2D_spikes_48")
 
-[node name="Checkpoint1" parent="." instance=ExtResource("ext_checkpoint_scene")]
+[node name="Checkpoint1" parent="." unique_id=42570535 instance=ExtResource("ext_checkpoint_scene")]
 position = Vector2(470, -32)
 
-[node name="Checkpoint2" parent="." instance=ExtResource("ext_checkpoint_scene")]
+[node name="Checkpoint2" parent="." unique_id=1136126855 instance=ExtResource("ext_checkpoint_scene")]
 position = Vector2(1040, -168)
 
-[node name="LevelExit" parent="." instance=ExtResource("ext_exit_scene")]
+[node name="LevelExit" parent="." unique_id=1515462165 instance=ExtResource("ext_exit_scene")]
 position = Vector2(1680, -32)
 next_scene_path = "res://main_menu.tscn"
-[node name="VoidHazard1" type="Area2D" parent="."]
+
+[node name="VoidHazard1" type="Area2D" parent="." unique_id=121478113]
 position = Vector2(560, -15)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_void_hazard_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="VoidHazard1"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VoidHazard1" unique_id=770246709]
 shape = SubResource("RectangleShape2D_void1")
 
-[node name="VoidHazard2" type="Area2D" parent="."]
+[node name="VoidHazard2" type="Area2D" parent="." unique_id=648880969]
 position = Vector2(664, -15)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("ext_void_hazard_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="VoidHazard2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="VoidHazard2" unique_id=1582550280]
 shape = SubResource("RectangleShape2D_void2")
