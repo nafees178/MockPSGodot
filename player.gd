@@ -307,7 +307,7 @@ func _process_normal_movement(delta: float) -> void:
 			velocity.y = min_jump_velocity
 
 # --- SLIPPERY TILE DETECTION ---
-	var is_slippery := false
+	var is_slippery:= false
 	if is_on_floor():
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
@@ -317,7 +317,7 @@ func _process_normal_movement(delta: float) -> void:
 				var tile_pos = collider.local_to_map(collider.to_local(collision_point))
 				var tile_data = collider.get_cell_tile_data(tile_pos)
 				if tile_data and tile_data.get_custom_data("is_slippery"):
-					is_slippery = true
+					is_slippery= true
 					break
 
 	# Horizontal velocity calculation
