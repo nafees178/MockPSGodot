@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://e1832a50dnug" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Extra_plants (16 x 16).png" id="3_kdubu"]
 [ext_resource type="Texture2D" uid="uid://dan60qpmjw08k" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Background parts/3 - Cloud_cover_1.png" id="4_6e4cv"]
 [ext_resource type="Texture2D" uid="uid://qjiqy01ct3o" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Grassland_entities (16 x 16).png" id="4_d21ai"]
+[ext_resource type="PackedScene" uid="uid://ckar7hakvibwu" path="res://tutorial_trigger.tscn" id="18_nauge"]
+[ext_resource type="PackedScene" uid="uid://bq4xjhywr76ek" path="res://prompt_ui.tscn" id="19_ycv2e"]
 [ext_resource type="PackedScene" path="res://signboard_checkpoint.tscn" id="ext_checkpoint_scene"]
 [ext_resource type="PackedScene" path="res://chest.tscn" id="ext_chest_scene"]
 [ext_resource type="PackedScene" path="res://level_exit.tscn" id="ext_exit_scene"]
@@ -792,8 +794,8 @@ region_rect = Rect2(48, 16, 48, 16)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Moving Platform/Path2D/AnimatableBody2D" unique_id=1884759902]
 shape = SubResource("RectangleShape2D_cxyel")
 
-[node name="Player" parent="." unique_id=1988582297 instance=ExtResource("ext_player_scene")]
-position = Vector2(20, -40)
+[node name="Player" parent="." unique_id=1988582297 groups=["Player"] instance=ExtResource("ext_player_scene")]
+position = Vector2(14.000002, -33.000004)
 scale = Vector2(0.84000003, 0.79999936)
 
 [node name="SignboardCheckpoint1" parent="." unique_id=83903218 instance=ExtResource("ext_checkpoint_scene")]
@@ -899,3 +901,11 @@ script = ExtResource("ext_spikes_script")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HazardSpikes/Pit6" unique_id=1552537650]
 position = Vector2(-0.5, 3.5)
 shape = SubResource("RectangleShape2D_spikes_32")
+
+[node name="Tutorial Trigger" parent="." unique_id=82905888 node_paths=PackedStringArray("prompt_ui") groups=["Player"] instance=ExtResource("18_nauge")]
+position = Vector2(25, -175)
+prompt_text = "W to move forward 
+S to move backward"
+prompt_ui = NodePath("../PromptUI")
+
+[node name="PromptUI" parent="." unique_id=1139585385 groups=["Player"] instance=ExtResource("19_ycv2e")]
