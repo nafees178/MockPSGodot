@@ -18,7 +18,6 @@ config/icon="res://icon.svg"
 [autoload]
 
 JuiceManager="*res://juice_manager.gd"
-
 McpInteractionServer="*res://mcp_interaction_server.gd"
 
 [display]
