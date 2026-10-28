@@ -6,6 +6,14 @@ extends Control
 @onready var bg: MenuBackground = $Background
 @onready var operative_sprite: AnimatedSprite2D = %OperativeSprite
 @onready var operative_stance_label: Label = %OperativeStanceLabel
+@onready var showcase_platform: ShowcasePlatform = %ShowcasePlatform
+@onready var scenic_backdrop: TextureRect = %ScenicBackdrop
+
+# Level Select Elements
+@onready var btn_level_1: Button = %BtnLevel1
+@onready var btn_level_2: Button = %BtnLevel2
+@onready var btn_level_3: Button = %BtnLevel3
+@onready var level_info_label: Label = %LevelInfoLabel
 
 # Transition elements
 @onready var transition_layer: CanvasLayer = %TransitionLayer
@@ -14,6 +22,7 @@ extends Control
 @onready var shutter_line: ColorRect = %ShutterLine
 @onready var transition_content: VBoxContainer = %TransitionContent
 @onready var transition_bar: ProgressBar = %TransitionBar
+@onready var loading_label: Label = %LoadingLabel
 
 # Modals
 @onready var modal_backdrop: ColorRect = %ModalBackdrop
@@ -41,6 +50,39 @@ extends Control
 var is_transitioning: bool = false
 var active_modal: Control = null
 var current_stance_idx: int = 0
+var selected_level_index: int = 0
+
+const LEVEL_SCENES: Array[String] = [
+	"res://level1.tscn",
+	"res://Level_2.tscn",
+	"res://Level 3.tscn"
+]
+
+const LEVEL_NAMES: Array[String] = [
+	"GRASSLAND",
+	"AUTUMN FOREST",
+	"WINTER WORLD"
+]
+
+const LEVEL_SUBTITLES: Array[String] = [
+	"MISSION 01: GRASSLAND FRONTIER",
+	"MISSION 02: AUTUMN WOODS & GROVES",
+	"MISSION 03: GLACIAL SUMMIT PEAKS"
+]
+
+const LEVEL_ACCENTS: Array[Color] = [
+	Color(0.35, 0.85, 0.55), # Green
+	Color(1.0, 0.65, 0.28),  # Amber
+	Color(0.42, 0.80, 1.0)   # Cyan
+]
+
+const SCENIC_BG_PATHS: Array[String] = [
+	"res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Background parts/_Complete_static_BG_(288 x 208).png",
+	"res://TileMap/Seasonal Tilesets/Seasonal Tilesets/2 - Autumn Forest/Background parts/_Complete_static_BG_(288 x 208).png",
+	"res://TileMap/Seasonal Tilesets/Seasonal Tilesets/4 - Winter World/Background parts/_Complete_static_BG_(288 x 208).png"
+]
+
+var scenic_textures: Array[Texture2D] = []
 
 # Grounded stances for preview
 const STANCES: Array[String] = [
@@ -66,12 +108,14 @@ const ANIM_Y_OFFSETS: Dictionary = {
 
 func _ready() -> void:
 	SettingsManager.load_settings()
+	_load_scenic_textures()
 	
 	_setup_styles()
 	_setup_settings_ui()
 	_connect_signals()
 	
 	_set_character_animation("idle")
+	_select_level(0, false) # Default to Level 1
 	
 	if transition_layer:
 		transition_layer.visible = true
@@ -81,6 +125,14 @@ func _ready() -> void:
 		transition_content.modulate.a = 0.0
 	
 	_hide_all_modals_instant()
+
+func _load_scenic_textures() -> void:
+	scenic_textures.clear()
+	for path in SCENIC_BG_PATHS:
+		if ResourceLoader.exists(path):
+			scenic_textures.append(load(path))
+		else:
+			scenic_textures.append(null)
 
 func _process(_delta: float) -> void:
 	if fps_label:
@@ -93,6 +145,8 @@ func _setup_styles() -> void:
 		if b == null:
 			continue
 		_apply_button_theme(b, font, b == btn_deploy)
+	
+	_update_level_buttons_visuals()
 
 func _apply_button_theme(btn: Button, font: Font, is_primary: bool) -> void:
 	if font:
@@ -155,6 +209,85 @@ func _apply_button_theme(btn: Button, font: Font, is_primary: bool) -> void:
 	style_focus.border_width_bottom = 2
 	btn.add_theme_stylebox_override("focus", style_focus)
 
+func _update_level_buttons_visuals() -> void:
+	var level_buttons = [btn_level_1, btn_level_2, btn_level_3]
+	for i in range(level_buttons.size()):
+		var b: Button = level_buttons[i]
+		if b == null:
+			continue
+		var is_selected = (i == selected_level_index)
+		var accent: Color = LEVEL_ACCENTS[i]
+		
+		var s_norm = StyleBoxFlat.new()
+		s_norm.corner_radius_top_left = 4
+		s_norm.corner_radius_top_right = 4
+		s_norm.corner_radius_bottom_right = 4
+		s_norm.corner_radius_bottom_left = 4
+		s_norm.content_margin_left = 12
+		s_norm.content_margin_right = 12
+		s_norm.content_margin_top = 8
+		s_norm.content_margin_bottom = 8
+		
+		if is_selected:
+			s_norm.bg_color = Color(accent.r * 0.22, accent.g * 0.22, accent.b * 0.22, 0.95)
+			s_norm.border_color = accent
+			s_norm.border_width_left = 2
+			s_norm.border_width_top = 2
+			s_norm.border_width_right = 2
+			s_norm.border_width_bottom = 3
+			s_norm.shadow_color = Color(accent.r, accent.g, accent.b, 0.35)
+			s_norm.shadow_size = 5
+			b.add_theme_color_override("font_color", Color.WHITE)
+		else:
+			s_norm.bg_color = Color(0.12, 0.14, 0.19, 0.88)
+			s_norm.border_color = Color(0.24, 0.28, 0.38, 0.7)
+			s_norm.border_width_left = 1
+			s_norm.border_width_top = 1
+			s_norm.border_width_right = 1
+			s_norm.border_width_bottom = 2
+			b.add_theme_color_override("font_color", Color(0.72, 0.78, 0.88, 0.9))
+		
+		b.add_theme_stylebox_override("normal", s_norm)
+		
+		var s_hov = s_norm.duplicate() as StyleBoxFlat
+		s_hov.bg_color = Color(accent.r * 0.32, accent.g * 0.32, accent.b * 0.32, 0.98)
+		s_hov.border_color = accent.lightened(0.2)
+		b.add_theme_stylebox_override("hover", s_hov)
+
+func _select_level(idx: int, play_sound: bool = true) -> void:
+	if idx < 0 or idx >= LEVEL_SCENES.size():
+		return
+	selected_level_index = idx
+	
+	if play_sound:
+		audio_manager.play_click()
+	
+	# 1. Update background theme (parallax layers & weather particles)
+	if bg:
+		bg.set_level_theme(idx)
+	
+	# 2. Update character platform theme
+	if showcase_platform:
+		showcase_platform.set_level_theme(idx)
+	
+	# 3. Update scenic backdrop in showcase card
+	if scenic_backdrop and idx < scenic_textures.size() and scenic_textures[idx] != null:
+		scenic_backdrop.texture = scenic_textures[idx]
+		var t = create_tween()
+		t.tween_property(scenic_backdrop, "modulate:a", 0.15, 0.08)
+		t.tween_property(scenic_backdrop, "modulate:a", 0.35, 0.2).set_trans(Tween.TRANS_QUAD)
+	
+	# 4. Update Deploy Button & Info Label
+	if btn_deploy:
+		btn_deploy.text = "DEPLOY: " + LEVEL_NAMES[idx]
+	
+	if level_info_label:
+		level_info_label.text = LEVEL_SUBTITLES[idx]
+		level_info_label.add_theme_color_override("font_color", LEVEL_ACCENTS[idx])
+	
+	# 5. Update level buttons appearance
+	_update_level_buttons_visuals()
+
 func _setup_settings_ui() -> void:
 	if master_slider:
 		master_slider.value = SettingsManager.master_volume * 100.0
@@ -193,6 +326,15 @@ func _connect_signals() -> void:
 			b.mouse_exited.connect(func(): _on_button_exit(b))
 			b.focus_entered.connect(func(): _on_button_hover(b, anim))
 			b.focus_exited.connect(func(): _on_button_exit(b))
+	
+	# Level Select button signals
+	var level_buttons = [btn_level_1, btn_level_2, btn_level_3]
+	for i in range(level_buttons.size()):
+		var lb: Button = level_buttons[i]
+		if lb:
+			var idx = i
+			lb.pressed.connect(func(): _select_level(idx, true))
+			lb.mouse_entered.connect(func(): audio_manager.play_hover())
 	
 	if master_slider:
 		master_slider.value_changed.connect(_on_master_slider_changed)
@@ -233,7 +375,6 @@ func _on_button_hover(btn: Button, anim: String) -> void:
 func _on_button_exit(btn: Button) -> void:
 	var t = create_tween()
 	t.tween_property(btn, "scale", Vector2(1.0, 1.0), 0.1).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	# Return to current active selected stance
 	var active_stance = STANCES[current_stance_idx]
 	_set_character_animation(active_stance)
 
@@ -244,6 +385,10 @@ func _on_deploy_pressed() -> void:
 	SettingsManager.reset_game_state()
 	
 	audio_manager.play_deploy()
+	
+	var target_scene = LEVEL_SCENES[selected_level_index]
+	if loading_label:
+		loading_label.text = "ENTERING %s..." % LEVEL_NAMES[selected_level_index]
 	
 	# 1. Ninja dynamic dash across platform to the right
 	_set_character_animation("dash")
@@ -272,7 +417,7 @@ func _on_deploy_pressed() -> void:
 	# 5. Scene switch
 	t.chain().tween_interval(0.08)
 	t.chain().tween_callback(func():
-		get_tree().change_scene_to_file("res://level1.tscn")
+		get_tree().change_scene_to_file(target_scene)
 	)
 
 func _open_modal(modal: Control) -> void:
@@ -387,3 +532,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			SettingsManager.save_settings()
 			if window_option:
 				window_option.selected = 1 if SettingsManager.window_mode == 2 else 0
+		elif event.keycode == KEY_1:
+			_select_level(0)
+		elif event.keycode == KEY_2:
+			_select_level(1)
+		elif event.keycode == KEY_3:
+			_select_level(2)
