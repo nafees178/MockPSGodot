@@ -29,6 +29,12 @@ func take_damage(amount: int, _weapon_name: String = "") -> void:
 	current_health -= amount
 	_update_label()
 	
+	# Combat Juice: Hit-stop, camera shake, wood splinters, damage number
+	JuiceManager.hit_stop(0.04)
+	JuiceManager.add_trauma(0.18)
+	JuiceManager.spawn_impact_sparks(global_position, Vector2.UP, Color(0.85, 0.65, 0.35))
+	JuiceManager.spawn_damage_number(global_position + Vector2(0, -10), amount, amount >= 2)
+	
 	# Hit flash & recoil shake
 	var tween = create_tween()
 	visual.modulate = Color(2.5, 1.5, 1.5, 1.0)
@@ -43,6 +49,12 @@ func take_damage(amount: int, _weapon_name: String = "") -> void:
 func break_crate() -> void:
 	is_broken = true
 	destroyed.emit()
+	
+	# Destruction Juice: Splinters burst, dust puff, camera shake
+	JuiceManager.add_trauma(0.3)
+	JuiceManager.spawn_death_burst(global_position, Color(0.8, 0.6, 0.35))
+	JuiceManager.spawn_dust_puff(global_position, 8, Color(0.75, 0.65, 0.5, 0.8))
+	
 	if collision_shape:
 		collision_shape.set_deferred("disabled", true)
 	if hit_area:

@@ -2,8 +2,8 @@ extends CharacterBody2D
 
 signal defeated
 
-@export var max_health: int = 4
-var health: int = 4
+@export var max_health: int = 5
+var health: int = 5
 var is_dead: bool = false
 var last_hit_time: float = -1.0
 
@@ -31,9 +31,15 @@ func take_damage(amount: int) -> void:
 	if hp_bar:
 		hp_bar.value = health
 	
+	# Dummy Combat Juice: Hit-stop, camera shake, sparks, floating damage number
+	JuiceManager.hit_stop(0.04)
+	JuiceManager.add_trauma(0.2)
+	JuiceManager.spawn_impact_sparks(global_position + Vector2(0, -10), Vector2.UP, Color(1.0, 0.85, 0.3))
+	JuiceManager.spawn_damage_number(global_position + Vector2(0, -16), amount, amount >= 2)
+	
 	# Hit flash & recoil
 	var tween = create_tween()
-	visual.modulate = Color(3.0, 1.0, 1.0, 1.0)
+	visual.modulate = Color(3.0, 2.0, 2.0, 1.0)
 	tween.tween_property(visual, "position:x", 8.0, 0.05)
 	tween.tween_property(visual, "position:x", -4.0, 0.05)
 	tween.tween_property(visual, "position:x", 0.0, 0.05)
@@ -45,6 +51,12 @@ func take_damage(amount: int) -> void:
 func die() -> void:
 	is_dead = true
 	defeated.emit()
+	
+	# Death Juice
+	JuiceManager.hit_stop(0.06)
+	JuiceManager.add_trauma(0.35)
+	JuiceManager.spawn_death_burst(global_position + Vector2(0, -10), Color(1.0, 0.5, 0.2))
+	
 	if hit_area:
 		hit_area.set_deferred("monitoring", false)
 		hit_area.set_deferred("monitorable", false)

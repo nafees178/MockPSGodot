@@ -26,9 +26,22 @@ func _on_body_entered(body: Node2D) -> void:
 	is_collected = true
 	collected.emit(value)
 	
+	# Gem Juice: Sparkles, Chime, Pop
+	JuiceManager.spawn_impact_sparks(global_position, Vector2.UP, Color(0.3, 0.9, 1.0))
+	var sfx = load("res://audio/sfx_twoTone.ogg") as AudioStream
+	if sfx:
+		var asp = AudioStreamPlayer2D.new()
+		asp.stream = sfx
+		asp.pitch_scale = randf_range(1.4, 1.6)
+		asp.volume_db = -8.0
+		get_parent().add_child(asp)
+		asp.global_position = global_position
+		asp.play()
+		asp.finished.connect(asp.queue_free)
+	
 	# Pickup pop animation
 	var tween = create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(visual, "scale", Vector2(1.6, 1.6), 0.2)
-	tween.tween_property(visual, "modulate:a", 0.0, 0.2)
+	tween.tween_property(visual, "scale", Vector2(1.8, 1.8), 0.18).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(visual, "modulate", Color(2.0, 2.5, 3.0, 0.0), 0.18)
 	tween.chain().tween_callback(queue_free)

@@ -64,6 +64,11 @@ enum WeaponType {
 
 # --- Internal State ---
 var current_state: State = State.IDLE
+var is_dying: bool = false
+var visual_squash: Vector2 = Vector2.ONE
+var ghost_timer: float = 0.0
+var was_on_floor: bool = true
+var prev_velocity_y: float = 0.0
 var facing_direction: int = 1 # 1 = right, -1 = left
 var default_gravity: float = 980.0
 var spawn_point: Vector2 = Vector2.ZERO
@@ -100,6 +105,9 @@ const ANIM_CONFIGS: Dictionary = {
 	"dash": { "scale": Vector2(0.070, 0.070), "offset": Vector2(0, -22.4) },
 	"crouch_idle": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
 	"crouch_walk": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
+	"death": { "scale": Vector2(0.080, 0.080), "offset": Vector2(0, -24.0) },
+	"hurt": { "scale": Vector2(0.075, 0.075), "offset": Vector2(0, -24.0) },
+	"land": { "scale": Vector2(0.073, 0.073), "offset": Vector2(0, -22.4) },
 }
 
 func _ready() -> void:
@@ -127,6 +135,7 @@ func _ready() -> void:
 		camera.limit_right = 2440
 		camera.limit_bottom = 140
 		camera.reset_smoothing()
+		JuiceManager.register_camera(camera)
 	
 	# Restore equipment state from previous level
 	if SettingsManager.has_katana:
@@ -135,6 +144,8 @@ func _ready() -> void:
 	_warm_up_textures()
 	if animated_sprite:
 		animated_sprite.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	add_to_group("player")
+	z_index = 10 # Elevate player above background layers in all scenes
 	change_state(State.IDLE)
 	_play_anim("idle")
 
@@ -170,7 +181,25 @@ func _unhandled_input(event: InputEvent) -> void:
 				equip_weapon(WeaponType.KATANA)
 
 func _physics_process(delta: float) -> void:
+	if is_dying:
+		move_and_slide()
+		return
+
 	_update_timers(delta)
+	
+	# Smooth squash & stretch decay
+	visual_squash = visual_squash.lerp(Vector2.ONE, 12.0 * delta)
+	
+	# Landing detection for juice (squash + dust)
+	if not was_on_floor and is_on_floor():
+		if prev_velocity_y > 100.0:
+			var impact = clamp(prev_velocity_y / 500.0, 0.1, 0.35)
+			visual_squash = Vector2(1.0 + impact, 1.0 - impact * 0.7)
+			JuiceManager.spawn_dust_puff(global_position, 5)
+			if prev_velocity_y > 320.0:
+				JuiceManager.add_trauma(0.12)
+	was_on_floor = is_on_floor()
+	prev_velocity_y = velocity.y
 	
 	match current_state:
 		State.DASH:
@@ -266,6 +295,9 @@ func _process_normal_movement(delta: float) -> void:
 			velocity.y = jump_velocity
 			jump_buffer_timer = 0.0
 			coyote_timer = 0.0
+			visual_squash = Vector2(0.85, 1.25)
+			JuiceManager.spawn_dust_puff(global_position, 4)
+			JuiceManager.add_trauma(0.12) # Subtle punchy jump shake
 			jumped.emit()
 			change_state(State.JUMP)
 
@@ -305,6 +337,12 @@ func _process_normal_movement(delta: float) -> void:
 func _process_dash_state(delta: float) -> void:
 	dash_timer -= delta
 	velocity = dash_direction * dash_speed
+	
+	# Spawn ninja dash ghost afterimage
+	ghost_timer -= delta
+	if ghost_timer <= 0.0:
+		ghost_timer = 0.04
+		_spawn_ghost_afterimage()
 
 	if dash_timer <= 0.0:
 		velocity.x = dash_direction.x * speed * 0.8
@@ -364,6 +402,13 @@ func _handle_strike_hit(area: Area2D, damage: int) -> void:
 	var target = area.get_parent()
 	if target and not (target in strike_hit_targets):
 		strike_hit_targets.append(target)
+		
+		# Combat Juice
+		JuiceManager.hit_stop(0.05)
+		JuiceManager.add_trauma(0.25 if current_weapon == WeaponType.KATANA else 0.15)
+		JuiceManager.spawn_impact_sparks(area.global_position, Vector2(facing_direction, -0.4))
+		JuiceManager.spawn_damage_number(area.global_position, damage, current_weapon == WeaponType.KATANA)
+		
 		if target.has_method("take_damage"):
 			target.take_damage(damage)
 		elif area.has_method("take_damage"):
@@ -397,6 +442,8 @@ func bounce(bounce_vel: float) -> void:
 	jump_buffer_timer = 0.0
 	bounce_grace_timer = 0.45 # Protect bounce from variable jump cutoff
 	position.y -= 4.0 # Break floor snap immediately
+	visual_squash = Vector2(0.85, 1.25)
+	JuiceManager.add_trauma(0.14)
 	change_state(State.JUMP)
 	_play_anim("jump_up")
 
@@ -411,6 +458,11 @@ func start_dash() -> void:
 	dash_direction = Vector2(dir_x, 0.0).normalized()
 	dash_timer = dash_duration
 	dash_cooldown_timer = dash_cooldown
+	ghost_timer = 0.0
+	visual_squash = Vector2(1.25, 0.8)
+	JuiceManager.add_trauma(0.18)
+	JuiceManager.pulse_aberration(0.012, 0.22)
+	JuiceManager.spawn_dust_puff(global_position + Vector2(-facing_direction * 8, 0), 6)
 	dashed.emit(dash_direction)
 	change_state(State.DASH)
 	_play_anim("dash")
@@ -478,25 +530,123 @@ func set_checkpoint(pos: Vector2) -> void:
 	spawn_point = pos
 
 func take_damage(_amount: int = 1) -> void:
-	respawn()
+	start_death_sequence()
 
 func die() -> void:
-	respawn()
+	start_death_sequence()
 
 func respawn() -> void:
+	start_death_sequence()
+
+func start_death_sequence() -> void:
+	if is_dying:
+		return
+	is_dying = true
 	velocity = Vector2.ZERO
-	global_position = spawn_point
-	change_state(State.IDLE)
-	respawned.emit()
-	if camera:
-		camera.reset_smoothing()
 	
-	if animated_sprite:
-		var tween = create_tween()
-		tween.tween_property(animated_sprite, "modulate:a", 0.3, 0.08)
-		tween.tween_property(animated_sprite, "modulate:a", 1.0, 0.08)
-		tween.tween_property(animated_sprite, "modulate:a", 0.3, 0.08)
-		tween.tween_property(animated_sprite, "modulate:a", 1.0, 0.08)
+	# Hit-stop & screen impact
+	JuiceManager.hit_stop(0.06)
+	JuiceManager.add_trauma(0.32)
+	JuiceManager.flash_crimson(0.38, 0.7)
+	JuiceManager.pulse_aberration(0.02, 0.28)
+	JuiceManager.spawn_death_burst(global_position + Vector2(0, -12), Color(1.0, 0.25, 0.25))
+	
+	# Audio cue
+	var sfx = load("res://audio/sfx_lose.ogg") as AudioStream
+	if sfx:
+		var asp = AudioStreamPlayer2D.new()
+		asp.stream = sfx
+		asp.volume_db = -2.0
+		get_parent().add_child(asp)
+		asp.global_position = global_position
+		asp.play()
+		asp.finished.connect(asp.queue_free)
+	
+	if animated_sprite and animated_sprite.sprite_frames.has_animation("death"):
+		_play_anim("death")
+	
+	_trigger_death_shutter()
+
+func _trigger_death_shutter() -> void:
+	var canvas = CanvasLayer.new()
+	canvas.layer = 160
+	add_child(canvas)
+	
+	var shutter_top = ColorRect.new()
+	shutter_top.color = Color(0.06, 0.08, 0.12, 1.0)
+	shutter_top.size = Vector2(1280, 362)
+	shutter_top.position = Vector2(0, -362)
+	canvas.add_child(shutter_top)
+	
+	var shutter_bottom = ColorRect.new()
+	shutter_bottom.color = Color(0.06, 0.08, 0.12, 1.0)
+	shutter_bottom.size = Vector2(1280, 362)
+	shutter_bottom.position = Vector2(0, 720)
+	canvas.add_child(shutter_bottom)
+	
+	# Close shutter over 0.32s
+	var close_t = create_tween()
+	close_t.parallel().tween_property(shutter_top, "position:y", 0.0, 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	close_t.parallel().tween_property(shutter_bottom, "position:y", 358.0, 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	
+	close_t.chain().tween_callback(func():
+		# Reset player position to checkpoint
+		global_position = spawn_point
+		velocity = Vector2.ZERO
+		change_state(State.IDLE)
+		_play_anim("idle")
+		if camera:
+			camera.reset_smoothing()
+		respawned.emit()
+		JuiceManager.spawn_shockwave(global_position + Vector2(0, -6), Color(0.3, 0.85, 1.0))
+	)
+	
+	close_t.chain().tween_interval(0.12)
+	
+	# Open shutter over 0.28s
+	close_t.chain().tween_property(shutter_top, "position:y", -362.0, 0.28).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	close_t.parallel().tween_property(shutter_bottom, "position:y", 720.0, 0.28).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	
+	close_t.chain().tween_callback(func():
+		canvas.queue_free()
+		is_dying = false
+		_play_respawn_invulnerability()
+	)
+
+func _play_respawn_invulnerability() -> void:
+	if not animated_sprite:
+		return
+	var tween = create_tween()
+	for i in range(4):
+		tween.tween_property(animated_sprite, "modulate:a", 0.35, 0.09)
+		tween.tween_property(animated_sprite, "modulate:a", 1.0, 0.09)
+
+func _spawn_ghost_afterimage() -> void:
+	if not animated_sprite or not animated_sprite.sprite_frames:
+		return
+	var scene = get_tree().current_scene
+	if not scene:
+		return
+	
+	var cur_anim = animated_sprite.animation
+	var cur_frame = animated_sprite.frame
+	var tex = animated_sprite.sprite_frames.get_frame_texture(cur_anim, cur_frame)
+	if not tex:
+		return
+	
+	var ghost = Sprite2D.new()
+	ghost.texture = tex
+	ghost.scale = animated_sprite.scale
+	ghost.global_position = animated_sprite.global_position
+	ghost.flip_h = animated_sprite.flip_h
+	ghost.modulate = Color(0.35, 0.85, 1.0, 0.7)
+	ghost.z_index = 9 # Render in world 2D space above terrain/background (0) and behind player (10)
+	scene.add_child(ghost)
+	
+	var gt = create_tween()
+	gt.parallel().tween_property(ghost, "modulate:a", 0.0, 0.22)
+	gt.parallel().tween_property(ghost, "scale", animated_sprite.scale * 1.12, 0.22)
+	gt.chain().tween_callback(ghost.queue_free)
 
 # --- Animation Control ---
 func _play_anim(anim_to_play: String) -> void:
@@ -506,7 +656,7 @@ func _play_anim(anim_to_play: String) -> void:
 		animated_sprite.play(anim_to_play)
 	
 	var cfg = ANIM_CONFIGS.get(anim_to_play, ANIM_CONFIGS["idle"])
-	animated_sprite.scale = cfg["scale"]
+	animated_sprite.scale = cfg["scale"] * visual_squash
 	animated_sprite.position = cfg["offset"]
 	animated_sprite.reset_physics_interpolation()
 

@@ -37,6 +37,16 @@ func _trigger_bounce_effects() -> void:
 	if animated_sprite and animated_sprite.sprite_frames and animated_sprite.sprite_frames.has_animation("bounce"):
 		animated_sprite.play("bounce")
 	
+	# Jump Pad Juice: Squash & stretch, launch particles, shockwave, camera pop
+	JuiceManager.spawn_shockwave(global_position + Vector2(0, -4), Color(0.3, 0.8, 1.0, 0.75))
+	JuiceManager.spawn_dust_puff(global_position + Vector2(0, -2), 8, Color(0.85, 0.95, 1.0, 0.75))
+	JuiceManager.add_trauma(0.22)
+	
+	var st = create_tween()
+	st.tween_property(self, "scale", Vector2(1.3, 0.7), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	st.tween_property(self, "scale", Vector2(0.9, 1.15), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	st.tween_property(self, "scale", Vector2(1.0, 1.0), 0.15)
+	
 	# Audio cue
 	var sfx = load("res://audio/sfx_shieldUp.ogg") as AudioStream
 	if sfx:
