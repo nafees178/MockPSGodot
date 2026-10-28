@@ -306,14 +306,30 @@ func _process_normal_movement(delta: float) -> void:
 		if not Input.is_action_pressed("jump"):
 			velocity.y = min_jump_velocity
 
+# --- SLIPPERY TILE DETECTION ---
+	var is_slippery := false
+	if is_on_floor():
+		for i in get_slide_collision_count():
+			var collision = get_slide_collision(i)
+			var collider = collision.get_collider()
+			if collider is TileMapLayer:
+				var collision_point = collision.get_position() - (collision.get_normal() * 4.0)
+				var tile_pos = collider.local_to_map(collider.to_local(collision_point))
+				var tile_data = collider.get_cell_tile_data(tile_pos)
+				if tile_data and tile_data.get_custom_data("is_slippery"):
+					is_slippery = true
+					break
+
 	# Horizontal velocity calculation
 	var target_speed = speed
 	if crouching:
 		target_speed = walk_speed * 0.7
 
 	var target_vel_x = input_x * target_speed
-	var accel = acceleration if is_on_floor() else air_acceleration
-	var decel = friction if is_on_floor() else air_friction
+	
+	# Scale down acceleration and friction if on slippery ice
+	var accel = (acceleration * 0.12) if is_slippery else (acceleration if is_on_floor() else air_acceleration)
+	var decel = (friction * 0.06) if is_slippery else (friction if is_on_floor() else air_friction)
 
 	if input_x != 0.0:
 		velocity.x = move_toward(velocity.x, target_vel_x, accel * delta)
