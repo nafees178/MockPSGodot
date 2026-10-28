@@ -6,10 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://ds81rxvbpbfto" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/5 - Misc. universal tiles/Snack_machine_Bench_Trash_bin (16 x 16).png" id="2_d21ai"]
 [ext_resource type="Texture2D" uid="uid://dfcdsrlxtlngw" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Terrain (16 x 16).png" id="2_q6r6c"]
 [ext_resource type="Script" uid="uid://dlmh4nvtq4056" path="res://moving_platform.gd" id="2_x0ka3"]
-[ext_resource type="Texture2D" uid="uid://c1xkx8qw0n52b" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Background parts/5 - Sky_color.png" id="2_ycv2e"]
 [ext_resource type="Texture2D" uid="uid://ct4ta5m501vgx" path="res://TileMap/Multi_Platformer_Tileset_Original/Multi_Platformer_Tileset_Original/GrassLand/Details/GrassLand_Entry_3.png" id="3_d21ai"]
 [ext_resource type="Texture2D" uid="uid://e1832a50dnug" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Extra_plants (16 x 16).png" id="3_kdubu"]
-[ext_resource type="Texture2D" uid="uid://dan60qpmjw08k" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Background parts/3 - Cloud_cover_1.png" id="4_6e4cv"]
 [ext_resource type="Texture2D" uid="uid://qjiqy01ct3o" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Grassland_entities (16 x 16).png" id="4_d21ai"]
 [ext_resource type="PackedScene" uid="uid://ckar7hakvibwu" path="res://tutorial_trigger.tscn" id="18_nauge"]
 [ext_resource type="PackedScene" uid="uid://bq4xjhywr76ek" path="res://prompt_ui.tscn" id="19_ycv2e"]
@@ -17,10 +15,10 @@
 [ext_resource type="PackedScene" path="res://signboard_checkpoint.tscn" id="ext_checkpoint_scene"]
 [ext_resource type="PackedScene" path="res://chest.tscn" id="ext_chest_scene"]
 [ext_resource type="PackedScene" path="res://level_exit.tscn" id="ext_exit_scene"]
+[ext_resource type="PackedScene" path="res://level_background.tscn" id="ext_level_bg_scene"]
 [ext_resource type="PackedScene" uid="uid://tie4xs4w3xaf" path="res://player.tscn" id="ext_player_scene"]
 [ext_resource type="Script" uid="uid://c0wqjbwk0timc" path="res://hazard_spikes.gd" id="ext_spikes_script"]
 [ext_resource type="PackedScene" path="res://vending_machine.tscn" id="ext_vending_scene"]
-[ext_resource type="PackedScene" path="res://level_background.tscn" id="ext_level_bg_scene"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x0ka3"]
 texture = ExtResource("1_kdubu")
@@ -756,8 +754,8 @@ size = Vector2(33, 16)
 [node name="Level 1" type="Node2D" unique_id=154268388]
 script = ExtResource("1_level1_script")
 
-[node name="LevelBackground" parent="." instance=ExtResource("ext_level_bg_scene")]
-theme = 0
+[node name="LevelBackground" parent="." unique_id=1309051146 instance=ExtResource("ext_level_bg_scene")]
+process_mode = 3
 
 [node name="Background Elements" type="TileMapLayer" parent="." unique_id=866939135]
 use_parent_material = true
