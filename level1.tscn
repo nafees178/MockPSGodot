@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://tie4xs4w3xaf" path="res://player.tscn" id="ext_player_scene"]
 [ext_resource type="Script" uid="uid://c0wqjbwk0timc" path="res://hazard_spikes.gd" id="ext_spikes_script"]
 [ext_resource type="PackedScene" path="res://vending_machine.tscn" id="ext_vending_scene"]
+[ext_resource type="PackedScene" path="res://level_background.tscn" id="ext_level_bg_scene"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_x0ka3"]
 texture = ExtResource("1_kdubu")
@@ -752,28 +753,8 @@ size = Vector2(33, 16)
 [node name="Level 1" type="Node2D" unique_id=154268388]
 script = ExtResource("1_level1_script")
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1165454008]
-follow_viewport_enabled = true
-
-[node name="Layer0_sky" type="ParallaxLayer" parent="ParallaxBackground" unique_id=416837088]
-texture_repeat = 2
-position = Vector2(-79, -115)
-motion_mirroring = Vector2(288, 0)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Layer0_sky" unique_id=1323961165]
-texture = ExtResource("2_ycv2e")
-centered = false
-region_enabled = true
-
-[node name="Layer2_CloudsNear" type="ParallaxLayer" parent="ParallaxBackground" unique_id=710520986]
-position = Vector2(30, 12)
-motion_scale = Vector2(0.2, 0.1)
-motion_mirroring = Vector2(288, 0)
-
-[node name="Sprite2D" type="Sprite2D" parent="ParallaxBackground/Layer2_CloudsNear" unique_id=864667342]
-position = Vector2(-129, -147)
-texture = ExtResource("4_6e4cv")
-centered = false
+[node name="LevelBackground" parent="." instance=ExtResource("ext_level_bg_scene")]
+theme = 0
 
 [node name="Background Elements" type="TileMapLayer" parent="." unique_id=866939135]
 use_parent_material = true

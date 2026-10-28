@@ -219,17 +219,28 @@ func _physics_process(delta: float) -> void:
 
 # --- Ceiling Clearance Check ---
 func is_under_ceiling() -> bool:
+	if current_state != State.CROUCH:
+		return false
 	var space_state = get_world_2d().direct_space_state
-	var query = PhysicsShapeQueryParameters2D.new()
-	var standing_shape = CapsuleShape2D.new()
-	standing_shape.radius = 5.5
-	standing_shape.height = STAND_HEIGHT - 2.0
-	query.shape = standing_shape
-	query.transform = Transform2D(0.0, global_position + Vector2(0, STAND_POS_Y))
-	query.collision_mask = 1 # Solid terrain and barricades
-	query.exclude = [get_rid()]
-	var results = space_state.intersect_shape(query, 1)
-	return results.size() > 0
+	if space_state == null:
+		return false
+	
+	# Cast 3 vertical rays directly above player within a narrow 5px width to prevent side-wall false positives
+	var test_offsets = [-2.5, 0.0, 2.5]
+	var from_y = global_position.y - 12.0
+	var to_y = global_position.y - 28.5
+	for ox in test_offsets:
+		var from_pos = Vector2(global_position.x + ox, from_y)
+		var to_pos = Vector2(global_position.x + ox, to_y)
+		var ray_query = PhysicsRayQueryParameters2D.create(from_pos, to_pos, 1) # Layer 1: Solid terrain
+		ray_query.exclude = [get_rid()]
+		var result = space_state.intersect_ray(ray_query)
+		if result:
+			var normal: Vector2 = result.get("normal", Vector2.ZERO)
+			# Solid ceiling facing downwards, or collision point above crouched height
+			if normal.y > 0.2 or result.get("position", Vector2.ZERO).y < from_y - 2.0:
+				return true
+	return false
 
 # --- Timer Management ---
 func _update_timers(delta: float) -> void:
@@ -262,11 +273,13 @@ func _process_normal_movement(delta: float) -> void:
 
 	var input_x: float = _get_horizontal_input()
 	var wants_crouch: bool = Input.is_action_pressed("crouch")
-	var under_ceiling: bool = is_under_ceiling()
+	var under_ceiling: bool = false
+	if current_state == State.CROUCH:
+		under_ceiling = is_under_ceiling()
 	var crouching: bool = (wants_crouch or under_ceiling) and is_on_floor()
 
-	# Drop-through one-way platforms: S + Jump
-	if crouching and (Input.is_action_just_pressed("jump") or jump_buffer_timer > 0.0):
+	# Drop-through one-way platforms: explicitly requires pressing down (crouch) + Jump
+	if wants_crouch and is_on_floor() and (Input.is_action_just_pressed("jump") or jump_buffer_timer > 0.0):
 		position.y += 3.0
 		jump_buffer_timer = 0.0
 		return
