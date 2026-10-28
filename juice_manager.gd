@@ -1,7 +1,8 @@
 extends Node
 
 # Centralized Game Feel & Juice Manager
-# Coordinates camera shake, hit-stop, screen flashes, post-processing, and visual feedback.
+# Coordinates camera shake, hit-stop, screen flashes, post-processing, visual feedback,
+# and controller haptic vibration.
 
 class ShockwaveRing extends Node2D:
 	var radius: float = 3.0
@@ -16,10 +17,12 @@ var _base_cam_offset: Vector2 = Vector2.ZERO
 var _trauma: float = 0.0
 var _trauma_power: float = 2.0
 var _decay_rate: float = 1.8
-var _max_offset: Vector2 = Vector2(8.0, 5.0)
-var _max_roll: float = 0.012
+var _max_offset: Vector2 = Vector2(16.0, 10.0)
+var _max_roll: float = 0.024
 var _noise_time: float = 0.0
 
+var _rumble_priority: int = 0
+var _rumble_end_time: float = 0.0
 var _is_frozen: bool = false
 var _post_layer: CanvasLayer = null
 var _post_rect: ColorRect = null
@@ -33,6 +36,7 @@ func _ready() -> void:
 	_font = load("res://audio/kenvector_future.ttf") as Font
 	_setup_environment()
 	_setup_post_processing()
+	_setup_controller_inputs()
 
 func _process(delta: float) -> void:
 	_update_camera_shake(delta)
@@ -47,6 +51,10 @@ func add_trauma(amount: float) -> void:
 	if not SettingsManager.screen_shake:
 		return
 	_trauma = clamp(_trauma + amount, 0.0, 1.0)
+	if SettingsManager.controller_vibration and amount >= 0.2:
+		var strong_amt = clampf(amount * 0.8, 0.15, 0.9)
+		var weak_amt = clampf(amount * 0.6, 0.1, 0.8)
+		vibrate_controller(weak_amt, strong_amt, 0.14)
 
 func _update_camera_shake(delta: float) -> void:
 	if _trauma <= 0.0:
@@ -110,6 +118,136 @@ func pulse_aberration(amount: float = 0.015, duration: float = 0.22) -> void:
 		if _post_mat:
 			_post_mat.set_shader_parameter("aberration_amount", val)
 	, amount, 0.0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+# --- Controller Haptic Feedback (Vibration) ---
+func vibrate_controller(weak: float = 0.5, strong: float = 0.5, duration: float = 0.2, priority: int = 0) -> void:
+	if not SettingsManager.controller_vibration:
+		return
+	var current_time = Time.get_ticks_msec() / 1000.0
+	if current_time < _rumble_end_time and priority < _rumble_priority:
+		return # Do not let lower-priority vibration interrupt an active high-priority rumble
+	
+	_rumble_priority = priority
+	_rumble_end_time = current_time + duration
+	
+	var pads = Input.get_connected_joypads()
+	if pads.is_empty():
+		Input.start_joy_vibration(0, clampf(weak, 0.0, 1.0), clampf(strong, 0.0, 1.0), duration)
+	else:
+		for pad in pads:
+			Input.start_joy_vibration(pad, clampf(weak, 0.0, 1.0), clampf(strong, 0.0, 1.0), duration)
+
+func stop_controller_vibration() -> void:
+	_rumble_priority = 0
+	_rumble_end_time = 0.0
+	var pads = Input.get_connected_joypads()
+	if pads.is_empty():
+		Input.stop_joy_vibration(0)
+	else:
+		for pad in pads:
+			Input.stop_joy_vibration(pad)
+
+# Tactile rumble presets
+func rumble_death() -> void:
+	# Maximum intensity violent controller shake when dead (priority 10)
+	vibrate_controller(1.0, 1.0, 0.70, 10)
+	# Secondary visceral aftershock pulse as shutter slams shut
+	var tree = get_tree()
+	if tree:
+		tree.create_timer(0.28, true, false, true).timeout.connect(func():
+			if SettingsManager.controller_vibration:
+				vibrate_controller(0.95, 1.0, 0.45, 10)
+		)
+
+func rumble_respawn() -> void:
+	# Punchy shockwave pop upon checkpoint respawn
+	vibrate_controller(0.4, 0.2, 0.15)
+
+func rumble_hit() -> void:
+	# Impact hit-stop rumble for melee hits on enemies or crates
+	vibrate_controller(0.7, 0.6, 0.16)
+
+func rumble_dash() -> void:
+	# High-frequency tactile zip
+	vibrate_controller(0.65, 0.25, 0.14)
+
+func rumble_land() -> void:
+	# Low-frequency thud on hard impact landing
+	vibrate_controller(0.2, 0.5, 0.16)
+
+func rumble_bounce() -> void:
+	# Springy pop for jump pads
+	vibrate_controller(0.5, 0.4, 0.2)
+
+func rumble_attack() -> void:
+	# Subtle swing whoosh
+	vibrate_controller(0.25, 0.1, 0.08)
+
+func rumble_jump() -> void:
+	# Crisp light tap on jump launch
+	vibrate_controller(0.2, 0.0, 0.06)
+
+# --- Automatic Controller Input Setup ---
+func _setup_controller_inputs() -> void:
+	_add_joy_motion("move_left", JOY_AXIS_LEFT_X, -1.0)
+	_add_joy_button("move_left", JOY_BUTTON_DPAD_LEFT)
+	
+	_add_joy_motion("move_right", JOY_AXIS_LEFT_X, 1.0)
+	_add_joy_button("move_right", JOY_BUTTON_DPAD_RIGHT)
+	
+	_add_joy_button("jump", JOY_BUTTON_A)
+	
+	_add_joy_button("dash", JOY_BUTTON_B)
+	_add_joy_button("dash", JOY_BUTTON_RIGHT_SHOULDER)
+	_add_joy_motion("dash", JOY_AXIS_TRIGGER_RIGHT, 1.0)
+	
+	_add_joy_button("attack", JOY_BUTTON_X)
+	_add_joy_button("attack", JOY_BUTTON_Y)
+	_add_joy_button("attack", JOY_BUTTON_LEFT_SHOULDER)
+	
+	_add_joy_motion("crouch", JOY_AXIS_LEFT_Y, 1.0)
+	_add_joy_button("crouch", JOY_BUTTON_DPAD_DOWN)
+	
+	_add_joy_button("pause", JOY_BUTTON_START)
+	_add_joy_key("pause", KEY_ESCAPE)
+	
+	_add_joy_button("weapon_swap", JOY_BUTTON_Y)
+	_add_joy_button("weapon_swap", JOY_BUTTON_LEFT_SHOULDER)
+	_add_joy_key("weapon_swap", KEY_TAB)
+
+func _add_joy_button(action_name: String, button_index: JoyButton) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name, 0.5)
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadButton and event.button_index == button_index:
+			return
+	var btn_event = InputEventJoypadButton.new()
+	btn_event.button_index = button_index
+	btn_event.device = -1
+	InputMap.action_add_event(action_name, btn_event)
+
+func _add_joy_motion(action_name: String, axis: JoyAxis, axis_value: float) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name, 0.5)
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventJoypadMotion and event.axis == axis and signf(event.axis_value) == signf(axis_value):
+			return
+	var motion_event = InputEventJoypadMotion.new()
+	motion_event.axis = axis
+	motion_event.axis_value = axis_value
+	motion_event.device = -1
+	InputMap.action_add_event(action_name, motion_event)
+
+func _add_joy_key(action_name: String, keycode: Key) -> void:
+	if not InputMap.has_action(action_name):
+		InputMap.add_action(action_name, 0.5)
+	for event in InputMap.action_get_events(action_name):
+		if event is InputEventKey and event.physical_keycode == keycode:
+			return
+	var key_event = InputEventKey.new()
+	key_event.physical_keycode = keycode
+	key_event.device = -1
+	InputMap.action_add_event(action_name, key_event)
 
 # --- Floating Damage Numbers ---
 func spawn_damage_number(world_pos: Vector2, amount: int, is_crit: bool = false) -> void:

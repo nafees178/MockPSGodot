@@ -170,8 +170,12 @@ func _warm_up_textures() -> void:
 	get_tree().create_timer(0.08).timeout.connect(warm_box.queue_free)
 
 func _unhandled_input(event: InputEvent) -> void:
-	# Quick weapon swap (Tab or Number keys 1, 2) - only if katana is unlocked
-	if event is InputEventKey and event.pressed and not event.echo:
+	# Quick weapon swap (Tab, 1, 2, or Gamepad weapon_swap) - only if katana is unlocked
+	if Input.is_action_just_pressed("weapon_swap"):
+		if has_katana:
+			var next_weapon = WeaponType.KATANA if current_weapon == WeaponType.UNARMED else WeaponType.UNARMED
+			equip_weapon(next_weapon)
+	elif event is InputEventKey and event.pressed and not event.echo:
 		if event.keycode == KEY_TAB or event.keycode == KEY_1:
 			if has_katana:
 				var next_weapon = WeaponType.KATANA if current_weapon == WeaponType.UNARMED else WeaponType.UNARMED
@@ -198,6 +202,7 @@ func _physics_process(delta: float) -> void:
 			JuiceManager.spawn_dust_puff(global_position, 5)
 			if prev_velocity_y > 320.0:
 				JuiceManager.add_trauma(0.12)
+				JuiceManager.rumble_land()
 	was_on_floor = is_on_floor()
 	prev_velocity_y = velocity.y
 	
@@ -311,6 +316,7 @@ func _process_normal_movement(delta: float) -> void:
 			visual_squash = Vector2(0.85, 1.25)
 			JuiceManager.spawn_dust_puff(global_position, 4)
 			JuiceManager.add_trauma(0.12) # Subtle punchy jump shake
+			JuiceManager.rumble_jump()
 			jumped.emit()
 			change_state(State.JUMP)
 
@@ -435,6 +441,7 @@ func _handle_strike_hit(area: Area2D, damage: int) -> void:
 		# Combat Juice
 		JuiceManager.hit_stop(0.05)
 		JuiceManager.add_trauma(0.25 if current_weapon == WeaponType.KATANA else 0.15)
+		JuiceManager.rumble_hit()
 		JuiceManager.spawn_impact_sparks(area.global_position, Vector2(facing_direction, -0.4))
 		JuiceManager.spawn_damage_number(area.global_position, damage, current_weapon == WeaponType.KATANA)
 		
@@ -473,6 +480,7 @@ func bounce(bounce_vel: float) -> void:
 	position.y -= 4.0 # Break floor snap immediately
 	visual_squash = Vector2(0.85, 1.25)
 	JuiceManager.add_trauma(0.14)
+	JuiceManager.rumble_bounce()
 	change_state(State.JUMP)
 	_play_anim("jump_up")
 
@@ -490,6 +498,7 @@ func start_dash() -> void:
 	ghost_timer = 0.0
 	visual_squash = Vector2(1.25, 0.8)
 	JuiceManager.add_trauma(0.18)
+	JuiceManager.rumble_dash()
 	JuiceManager.pulse_aberration(0.012, 0.22)
 	JuiceManager.spawn_dust_puff(global_position + Vector2(-facing_direction * 8, 0), 6)
 	dashed.emit(dash_direction)
@@ -504,6 +513,7 @@ func start_punch() -> void:
 	hit_2_fired = false
 	strike_hit_targets.clear()
 	attack_performed.emit("punch")
+	JuiceManager.rumble_attack()
 	change_state(State.PUNCH)
 	_play_anim("punch")
 	velocity.x = 0.0
@@ -516,6 +526,7 @@ func start_katana() -> void:
 	hit_2_fired = false
 	strike_hit_targets.clear()
 	attack_performed.emit("katana")
+	JuiceManager.rumble_attack()
 	change_state(State.KATANA)
 	_play_anim("katana")
 	velocity.x = 0.0
@@ -572,12 +583,14 @@ func start_death_sequence() -> void:
 		return
 	is_dying = true
 	velocity = Vector2.ZERO
+	# Haptic feedback - heavy controller shake when dead
+	JuiceManager.rumble_death()
 	
 	# Hit-stop & screen impact
-	JuiceManager.hit_stop(0.06)
-	JuiceManager.add_trauma(0.32)
-	JuiceManager.flash_crimson(0.38, 0.7)
-	JuiceManager.pulse_aberration(0.02, 0.28)
+	JuiceManager.hit_stop(0.08)
+	JuiceManager.add_trauma(1.0)
+	JuiceManager.flash_crimson(0.45, 0.85)
+	JuiceManager.pulse_aberration(0.035, 0.35)
 	JuiceManager.spawn_death_burst(global_position + Vector2(0, -12), Color(1.0, 0.25, 0.25))
 	
 	# Audio cue
@@ -628,6 +641,7 @@ func _trigger_death_shutter() -> void:
 			camera.reset_smoothing()
 		respawned.emit()
 		JuiceManager.spawn_shockwave(global_position + Vector2(0, -6), Color(0.3, 0.85, 1.0))
+		JuiceManager.rumble_respawn()
 	)
 	
 	close_t.chain().tween_interval(0.12)

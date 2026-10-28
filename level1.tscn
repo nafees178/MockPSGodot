@@ -1,4 +1,4 @@
-[gd_scene format=4 uid="uid://bl2wtha3vqx5j"]
+﻿[gd_scene format=4 uid="uid://bl2wtha3vqx5j"]
 
 [ext_resource type="Texture2D" uid="uid://c8v6cto86vr8h" path="res://TileMap/Dungeon Tile Set.png" id="1_0hol4"]
 [ext_resource type="Texture2D" uid="uid://bwfj8vfc4dgsb" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/5 - Misc. universal tiles/Blocks (16 x 16).png" id="1_kdubu"]
@@ -903,13 +903,39 @@ script = ExtResource("ext_spikes_script")
 position = Vector2(-0.5, 3.5)
 shape = SubResource("RectangleShape2D_spikes_32")
 
-[node name="Tutorial Trigger" parent="." unique_id=82905888 node_paths=PackedStringArray("prompt_ui") groups=["Player"] instance=ExtResource("18_nauge")]
-position = Vector2(25, -175)
-prompt_text = "W to move forward 
-S to move backward"
+[node name="PromptUI" parent="." unique_id=1139585385 groups=["Player"] instance=ExtResource("19_ycv2e")]
+
+[node name="TutorialMove" parent="." node_paths=PackedStringArray("prompt_ui") instance=ExtResource("18_nauge")]
+position = Vector2(60, -30)
+prompt_text = "  A / D  or  Stick / D-Pad  -  Move
+  Explore the grasslands!"
+dismiss_on_action = "move_right"
+show_once = true
 prompt_ui = NodePath("../PromptUI")
 
-[node name="PromptUI" parent="." unique_id=1139585385 groups=["Player"] instance=ExtResource("19_ycv2e")]
+[node name="TutorialJump" parent="." node_paths=PackedStringArray("prompt_ui") instance=ExtResource("18_nauge")]
+position = Vector2(250, -30)
+prompt_text = "  SPACE  or  [A] Button  -  Jump
+  Hold longer to jump higher!"
+dismiss_on_action = "jump"
+show_once = true
+prompt_ui = NodePath("../PromptUI")
+
+[node name="TutorialDash" parent="." node_paths=PackedStringArray("prompt_ui") instance=ExtResource("18_nauge")]
+position = Vector2(650, -30)
+prompt_text = "  SHIFT / C  or  [B] / [RB]  -  Dash
+  A quick burst of speed!"
+dismiss_on_action = "dash"
+show_once = true
+prompt_ui = NodePath("../PromptUI")
+
+[node name="TutorialPunch" parent="." node_paths=PackedStringArray("prompt_ui") instance=ExtResource("18_nauge")]
+position = Vector2(1150, -30)
+prompt_text = "  J / F / LMB  or  [X] Button  -  Punch
+  Smash crates and obstacles!"
+dismiss_on_action = "attack"
+show_once = true
+prompt_ui = NodePath("../PromptUI")
 
 [node name="WalkingEnemy" parent="." unique_id=1493332609 instance=ExtResource("20_ycv2e")]
 position = Vector2(1455, 104)
