@@ -3,6 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://c8v6cto86vr8h" path="res://TileMap/Dungeon Tile Set.png" id="1_b561d"]
 [ext_resource type="Script" uid="uid://bhj4shm2qok7f" path="res://level3.gd" id="1_level3_script"]
 [ext_resource type="Texture2D" uid="uid://ds81rxvbpbfto" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/5 - Misc. universal tiles/Snack_machine_Bench_Trash_bin (16 x 16).png" id="2_odbja"]
+[ext_resource type="Texture2D" uid="uid://d0ysty06aodc1" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/4 - Winter World/Background parts/3 - Big_mountain_BG.png" id="2_w0paq"]
 [ext_resource type="Texture2D" uid="uid://e7vsco33aem8" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/4 - Winter World/Winter_entities (16 x 16).png" id="3_1tttp"]
 [ext_resource type="Texture2D" uid="uid://b0bueb6onieo2" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/4 - Winter World/Background parts/1 - Snowy_foreground_area.png" id="4_arjvk"]
 [ext_resource type="Texture2D" uid="uid://cfpchdbj6r00t" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/4 - Winter World/Background parts/2 - Smaller_mountains.png" id="5_wjsoq"]
@@ -1186,6 +1187,37 @@ size = Vector2(20, 500)
 [node name="Level3" type="Node2D" unique_id=1195871397]
 script = ExtResource("1_level3_script")
 metadata/_edit_vertical_guides_ = [478.0]
+
+[node name="Node2D" type="Node2D" parent="." unique_id=755389458]
+texture_repeat = 2
+position = Vector2(-42.999996, 20)
+scale = Vector2(1.2463386, 1.1304724)
+
+[node name="Parallax2D2" type="Parallax2D" parent="Node2D" unique_id=2065968490]
+texture_repeat = 2
+scroll_scale = Vector2(0.5, 0.5)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Parallax2D2" unique_id=940387113]
+position = Vector2(56, -266)
+scale = Vector2(1.420139, 1.7596154)
+texture = ExtResource("2_w0paq")
+centered = false
+
+[node name="Parallax2D3" type="Parallax2D" parent="Node2D" unique_id=1394622687]
+texture_repeat = 2
+scroll_scale = Vector2(1.3, 1.3)
+repeat_size = Vector2(288, 0)
+repeat_times = 3
+ignore_camera_scroll = true
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Parallax2D3" unique_id=1216119401]
+position = Vector2(54, -382)
+scale = Vector2(1.4340278, 2.3125)
+texture = ExtResource("5_wjsoq")
+centered = false
 
 [node name="Back elements" type="TileMapLayer" parent="." unique_id=846514310]
 tile_map_data = PackedByteArray("AAAdAP7/BAAMAAgAAAAOAP3/AgABAAEAAAAOAP7/AgABAAIAAAAOAP//AgABAAMAAAAPAP3/AgACAAEAAAAPAP7/AgACAAIAAAAPAP//AgACAAMAAAAQAP3/AgADAAEAAAAQAP7/AgADAAIAAAAQAP//BwADAAUAAAABAP3/AgABAAEAAAABAP7/AgABAAIAAAABAP//AgABAAMAAAACAP3/AgACAAEAAAACAP7/AgACAAIAAAACAP//AgACAAMAAAADAP3/AgADAAEAAAADAP7/AgADAAIAAAADAP//AgAJAAEAAAAnAP3/AgABAAEAAAAnAP7/AgABAAIAAAAnAP//AgABAAMAAAAoAP3/AgACAAEAAAAoAP7/AgACAAIAAAAoAP//AgACAAMAAAApAP3/AgADAAEAAAApAP7/AgADAAIAAAApAP//AgADAAMAAABCAP7/AgABAAEAAABCAP//AgABAAIAAABCAAAAAgABAAMAAABDAP7/AgACAAEAAABDAP//AgACAAIAAABDAAAAAgACAAMAAABEAP7/AgADAAEAAABEAP//AgADAAIAAABEAAAAAgAJAAEAAABbAP7/AgABAAEAAABbAP//AgABAAIAAABbAAAAAgABAAMAAABcAP7/AgACAAEAAABcAP//AgACAAIAAABcAAAAAgACAAMAAABdAP7/AgADAAEAAABdAP//AgADAAIAAABdAAAAAgADAAMAAABFAAAAAgAKAAEAAABGAAAAAgALAAEAAAAkAP//AgAJAAEAAAAlAP//AgAKAAEAAAAmAP//AgALAAEAAAAEAP//AgAKAAEAAAAFAP//AgALAAEAAAAXAP//AgAJAAMAAAAYAP//AgAKAAMAAAAZAP//AgALAAMAAAAaAP//AgABAAUAAABHAAAAAgABAAUAAABVAAMABwADAAUAAABPAAMAAgABAAUAAABUAAcAAgABAAUAAABaAAgAAgADAAUAAABbAAgAAgAEAAUAAABRAAYAAgADAAUAAABSAAYAAgAEAAUAAABcAAUAAgADAAUAAABdAAUAAgAEAAUAAABkAAIAAgADAAUAAABlAAIAAgAEAAUAAABYAAAAAQAEAAIAAABZAAAAAQAFAAIAAAA5AAAAAgADAAUAAAA6AAAAAgAEAAUAAAAyAPv/AgADAAUAAAAzAPv/AgAEAAUAAAAqAPr/AgADAAUAAAArAPr/AgAEAAUAAAAtAPv/AgADAAUAAAAuAPv/AgAEAAUAAAAHAP//AgADAAUAAAAIAP//AgAEAAUAAAAHAP3/AgADAAUAAAAIAP3/AgAEAAUAAAAHAPz/AgADAAUAAAAIAPz/AgAEAAUAAAAMAPz/AgADAAUAAAAKAPz/AgADAAUAAAALAPz/AgAEAAUAAAARAP//AgAEAAUAAAAhAP//AgADAAUAAAAiAP//AgAEAAUAAABVAP//AQABAAEAAABVAAAAAQABAAIAAABWAP//AQACAAEAAABWAAAAAQACAAIAAABXAP//AQADAAEAAABXAAAAAQADAAIAAABYAP//AQAEAAEAAABZAP//AQAFAAEAAABaAAAAAQAGAAIAAAA2APz/BwADAAUAAAA=")
