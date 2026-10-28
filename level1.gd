@@ -32,10 +32,26 @@ func _ready() -> void:
 	_setup_hud()
 	
 	if player:
+		# Clamp camera specifically to Level 1 bounds (limit_bottom keeps solid dirt tiles grounded)
+		if player.camera:
+			player.camera.limit_left = -80
+			player.camera.limit_top = -320
+			player.camera.limit_right = 2480
+			player.camera.limit_bottom = 80
+			player.camera.reset_smoothing()
+		
 		player.state_changed.connect(_on_player_state_changed)
 		player.weapon_changed.connect(_on_player_weapon_changed)
 		player.respawned.connect(_on_player_respawned)
 		_on_player_weapon_changed(player.current_weapon)
+	
+	# Ensure LevelBackground is present
+	if not has_node("LevelBackground"):
+		var bg_scene = load("res://level_background.tscn") as PackedScene
+		if bg_scene:
+			var bg = bg_scene.instantiate()
+			bg.theme = LevelBackground.LevelTheme.GRASSLAND
+			add_child(bg)
 	
 	# Smooth entrance curtain
 	_setup_entrance_transition()
@@ -71,6 +87,14 @@ func _setup_hud() -> void:
 	var vbox = VBoxContainer.new()
 	vbox.add_theme_constant_override("separation", 4)
 	hud_panel.add_child(vbox)
+	
+	var lvl_title = Label.new()
+	lvl_title.text = "LEVEL 1 - GRASSLAND"
+	if font:
+		lvl_title.add_theme_font_override("font", font)
+	lvl_title.add_theme_font_size_override("font_size", 9)
+	lvl_title.add_theme_color_override("font_color", Color(0.35, 0.85, 0.55, 1.0))
+	vbox.add_child(lvl_title)
 	
 	weapon_label = Label.new()
 	weapon_label.text = "Weapon: Unarmed"

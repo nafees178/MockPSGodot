@@ -44,6 +44,14 @@ func _ready() -> void:
 		player.respawned.connect(_on_player_respawned)
 		_on_player_weapon_changed(player.current_weapon)
 	
+	# Ensure LevelBackground is present
+	if not has_node("LevelBackground"):
+		var bg_scene = load("res://level_background.tscn") as PackedScene
+		if bg_scene:
+			var bg = bg_scene.instantiate()
+			bg.theme = LevelBackground.LevelTheme.AUTUMN
+			add_child(bg)
+	
 	_setup_entrance_transition()
 
 func _setup_hud() -> void:

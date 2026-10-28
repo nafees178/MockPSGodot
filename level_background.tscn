@@ -1,0 +1,16 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://level_background.gd" id="1_bg_script"]
+
+[node name="LevelBackground" type="CanvasLayer"]
+layer = -100
+script = ExtResource("1_bg_script")
+
+[node name="BackgroundCanvas" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

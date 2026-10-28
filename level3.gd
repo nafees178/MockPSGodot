@@ -44,6 +44,14 @@ func _ready() -> void:
 		player.respawned.connect(_on_player_respawned)
 		_on_player_weapon_changed(player.current_weapon)
 	
+	# Ensure LevelBackground is present
+	if not has_node("LevelBackground"):
+		var bg_scene = load("res://level_background.tscn") as PackedScene
+		if bg_scene:
+			var bg = bg_scene.instantiate()
+			bg.theme = LevelBackground.LevelTheme.WINTER
+			add_child(bg)
+	
 	_setup_entrance_transition()
 
 func _setup_hud() -> void:
@@ -168,6 +176,4 @@ func _setup_entrance_transition() -> void:
 	t.tween_interval(0.4)
 	t.parallel().tween_property(title, "modulate:a", 0.0, 0.5).set_delay(0.4)
 	t.parallel().tween_property(fader, "modulate:a", 0.0, 0.8).set_delay(0.4)
-	t.chain().tween_callback(func():
-		canvas.queue_free()
-	)
+	t.chain().tween_callback(canvas.queue_free)
