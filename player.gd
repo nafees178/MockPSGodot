@@ -220,24 +220,16 @@ func _physics_process(delta: float) -> void:
 # --- Ceiling Clearance Check ---
 func is_under_ceiling() -> bool:
 	var space_state = get_world_2d().direct_space_state
-	# Cast vertical rays upward from inside the crouch bounds to standing head height.
-	# Using local coordinates converted via to_global() accounts for player node scale.
-	# Rays at x offsets -4, -2, 0, 2, 4 local units stay well inside the player's 6.0 radius,
-	# avoiding false positives on adjacent vertical walls while ensuring any ceiling is detected.
-	var x_offsets = [-4.0, -2.0, 0.0, 2.0, 4.0]
-	var query = PhysicsRayQueryParameters2D.new()
+	var query = PhysicsShapeQueryParameters2D.new()
+	var standing_shape = CapsuleShape2D.new()
+	standing_shape.radius = 5.5
+	standing_shape.height = STAND_HEIGHT - 2.0
+	query.shape = standing_shape
+	query.transform = Transform2D(0.0, global_position + Vector2(0, STAND_POS_Y))
 	query.collision_mask = 1 # Solid terrain and barricades
 	query.exclude = [get_rid()]
-	
-	for x_off in x_offsets:
-		query.from = to_global(Vector2(x_off, -CROUCH_HEIGHT + 2.0))
-		query.to = to_global(Vector2(x_off, -STAND_HEIGHT - 1.0))
-		var hit = space_state.intersect_ray(query)
-		if not hit.is_empty():
-			# In Godot 2D (+Y is down), a ceiling has a downward-facing normal (normal.y > 0)
-			if hit.normal.y > 0.1:
-				return true
-	return false
+	var results = space_state.intersect_shape(query, 1)
+	return results.size() > 0
 
 # --- Timer Management ---
 func _update_timers(delta: float) -> void:
@@ -271,7 +263,7 @@ func _process_normal_movement(delta: float) -> void:
 	var input_x: float = _get_horizontal_input()
 	var wants_crouch: bool = Input.is_action_pressed("crouch")
 	var under_ceiling: bool = is_under_ceiling()
-	var crouching: bool = (wants_crouch or (current_state == State.CROUCH and under_ceiling)) and is_on_floor()
+	var crouching: bool = (wants_crouch or under_ceiling) and is_on_floor()
 
 	# Drop-through one-way platforms: S + Jump
 	if crouching and (Input.is_action_just_pressed("jump") or jump_buffer_timer > 0.0):
@@ -315,19 +307,18 @@ func _process_normal_movement(delta: float) -> void:
 			velocity.y = min_jump_velocity
 
 # --- SLIPPERY TILE DETECTION ---
-	var is_slippery := false
+	var is_slippery:= false
 	if is_on_floor():
 		for i in get_slide_collision_count():
 			var collision = get_slide_collision(i)
 			var collider = collision.get_collider()
-			if collider is TileMapLayer and collider.tile_set:
-				if collider.tile_set.has_custom_data_layer_by_name("is_slippery"):
-					var collision_point = collision.get_position() - (collision.get_normal() * 4.0)
-					var tile_pos = collider.local_to_map(collider.to_local(collision_point))
-					var tile_data = collider.get_cell_tile_data(tile_pos)
-					if tile_data and tile_data.get_custom_data("is_slippery"):
-						is_slippery = true
-						break
+			if collider is TileMapLayer:
+				var collision_point = collision.get_position() - (collision.get_normal() * 4.0)
+				var tile_pos = collider.local_to_map(collider.to_local(collision_point))
+				var tile_data = collider.get_cell_tile_data(tile_pos)
+				if tile_data and tile_data.get_custom_data("is_slippery"):
+					is_slippery= true
+					break
 
 	# Horizontal velocity calculation
 	var target_speed = speed
