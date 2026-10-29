@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://cxp3a8v7e1klm"]
 
-[ext_resource type="Script" path="res://main_menu.gd" id="1_menu_script"]
-[ext_resource type="Script" path="res://menu_audio.gd" id="2_audio_script"]
-[ext_resource type="Script" path="res://menu_background.gd" id="3_bg_script"]
+[ext_resource type="Script" uid="uid://btrpef6bktxxk" path="res://main_menu.gd" id="1_menu_script"]
+[ext_resource type="Script" uid="uid://d1qpagkvntrrl" path="res://menu_audio.gd" id="2_audio_script"]
+[ext_resource type="Script" uid="uid://cm3e8dfc4dcc1" path="res://menu_background.gd" id="3_bg_script"]
 [ext_resource type="SpriteFrames" uid="uid://rb4jbddmutym" path="res://player_sprite_frames.tres" id="4_player_frames"]
-[ext_resource type="FontFile" path="res://audio/kenvector_future.ttf" id="5_font_bold"]
-[ext_resource type="FontFile" path="res://audio/kenvector_future_thin.ttf" id="6_font_thin"]
-[ext_resource type="Script" path="res://showcase_platform.gd" id="7_platform_script"]
+[ext_resource type="FontFile" uid="uid://cu6ykivskmr0x" path="res://audio/kenvector_future.ttf" id="5_font_bold"]
+[ext_resource type="FontFile" uid="uid://csxrx2ed1ycsv" path="res://audio/kenvector_future_thin.ttf" id="6_font_thin"]
+[ext_resource type="Script" uid="uid://e68u0pu558f5" path="res://showcase_platform.gd" id="7_platform_script"]
 [ext_resource type="Texture2D" uid="uid://o3cna0l4fsub" path="res://TileMap/Seasonal Tilesets/Seasonal Tilesets/1 - Grassland/Background parts/_Complete_static_BG_(288 x 208).png" id="8_bg_grassland"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
@@ -22,20 +22,6 @@ corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
 shadow_color = Color(0, 0, 0, 0.3)
 shadow_size = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
-bg_color = Color(0.11, 0.13, 0.18, 0.98)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.32, 0.44, 0.6, 0.9)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_secondary"]
 content_margin_left = 14.0
@@ -53,12 +39,26 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
+bg_color = Color(0.11, 0.13, 0.18, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.32, 0.44, 0.6, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 14
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_primary"]
 content_margin_left = 18.0
 content_margin_top = 8.0
 content_margin_right = 18.0
 content_margin_bottom = 8.0
-bg_color = Color(0.20, 0.32, 0.48, 0.95)
+bg_color = Color(0.2, 0.32, 0.48, 0.95)
 border_width_left = 2
 border_width_top = 1
 border_width_right = 1
@@ -99,7 +99,7 @@ corner_radius_top_right = 3
 corner_radius_bottom_right = 3
 corner_radius_bottom_left = 3
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=700366520]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -108,10 +108,10 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_menu_script")
 
-[node name="MenuAudio" type="Node" parent="."]
+[node name="MenuAudio" type="Node" parent="." unique_id=78438616]
 script = ExtResource("2_audio_script")
 
-[node name="Background" type="Control" parent="."]
+[node name="Background" type="Control" parent="." unique_id=51303851]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -121,7 +121,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("3_bg_script")
 
-[node name="TopHeader" type="MarginContainer" parent="."]
+[node name="TopHeader" type="MarginContainer" parent="." unique_id=231822607]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -131,33 +131,33 @@ theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 18
 theme_override_constants/margin_right = 32
 
-[node name="HBox" type="HBoxContainer" parent="TopHeader"]
+[node name="HBox" type="HBoxContainer" parent="TopHeader" unique_id=1302881498]
 layout_mode = 2
 
-[node name="TitleGroup" type="VBoxContainer" parent="TopHeader/HBox"]
+[node name="TitleGroup" type="VBoxContainer" parent="TopHeader/HBox" unique_id=266992197]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 2
 
-[node name="GameTitle" type="Label" parent="TopHeader/HBox/TitleGroup"]
+[node name="GameTitle" type="Label" parent="TopHeader/HBox/TitleGroup" unique_id=171575844]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.94, 0.98, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 26
 text = "INTER IIT MOCK"
 
-[node name="SubTitle" type="Label" parent="TopHeader/HBox/TitleGroup"]
+[node name="SubTitle" type="Label" parent="TopHeader/HBox/TitleGroup" unique_id=790755896]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.68, 0.78, 1)
 theme_override_fonts/font = ExtResource("6_font_thin")
 theme_override_font_sizes/font_size = 12
 text = "2D Platformer Challenge"
 
-[node name="TelemetryGroup" type="HBoxContainer" parent="TopHeader/HBox"]
+[node name="TelemetryGroup" type="HBoxContainer" parent="TopHeader/HBox" unique_id=1113033066]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="FpsLabel" type="Label" parent="TopHeader/HBox/TelemetryGroup"]
+[node name="FpsLabel" type="Label" parent="TopHeader/HBox/TelemetryGroup" unique_id=1841214560]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.72, 0.82, 1)
@@ -165,14 +165,14 @@ theme_override_fonts/font = ExtResource("6_font_thin")
 theme_override_font_sizes/font_size = 11
 text = "FPS: 60"
 
-[node name="VersionLabel" type="Label" parent="TopHeader/HBox/TelemetryGroup"]
+[node name="VersionLabel" type="Label" parent="TopHeader/HBox/TelemetryGroup" unique_id=59827708]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.5, 0.58, 0.68, 1)
 theme_override_fonts/font = ExtResource("6_font_thin")
 theme_override_font_sizes/font_size = 11
 text = "v1.0.0"
 
-[node name="HeaderLine" type="ColorRect" parent="."]
+[node name="HeaderLine" type="ColorRect" parent="." unique_id=1732441439]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -183,7 +183,7 @@ offset_bottom = 75.0
 grow_horizontal = 2
 color = Color(0.24, 0.3, 0.4, 0.6)
 
-[node name="MainLayout" type="HBoxContainer" parent="."]
+[node name="MainLayout" type="HBoxContainer" parent="." unique_id=1994213578]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -196,19 +196,19 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 36
 
-[node name="LeftNav" type="VBoxContainer" parent="MainLayout"]
+[node name="LeftNav" type="VBoxContainer" parent="MainLayout" unique_id=1627890514]
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="NavHeader" type="Label" parent="MainLayout/LeftNav"]
+[node name="NavHeader" type="Label" parent="MainLayout/LeftNav" unique_id=871167287]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.7, 0.82, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 12
 text = "MAIN MENU"
 
-[node name="BtnDeploy" type="Button" parent="MainLayout/LeftNav"]
+[node name="BtnDeploy" type="Button" parent="MainLayout/LeftNav" unique_id=335214128]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
@@ -218,7 +218,7 @@ mouse_default_cursor_shape = 2
 text = "PLAY"
 alignment = 0
 
-[node name="BtnSettings" type="Button" parent="MainLayout/LeftNav"]
+[node name="BtnSettings" type="Button" parent="MainLayout/LeftNav" unique_id=1993648060]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
@@ -228,10 +228,10 @@ mouse_default_cursor_shape = 2
 text = "SETTINGS"
 alignment = 0
 
-[node name="HSeparator" type="HSeparator" parent="MainLayout/LeftNav"]
+[node name="HSeparator" type="HSeparator" parent="MainLayout/LeftNav" unique_id=356303282]
 layout_mode = 2
 
-[node name="BtnQuit" type="Button" parent="MainLayout/LeftNav"]
+[node name="BtnQuit" type="Button" parent="MainLayout/LeftNav" unique_id=1920459081]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
@@ -241,33 +241,33 @@ mouse_default_cursor_shape = 2
 text = "QUIT"
 alignment = 0
 
-[node name="Spacer" type="Control" parent="MainLayout/LeftNav"]
+[node name="Spacer" type="Control" parent="MainLayout/LeftNav" unique_id=884499228]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ControlsCard" type="PanelContainer" parent="MainLayout/LeftNav"]
+[node name="ControlsCard" type="PanelContainer" parent="MainLayout/LeftNav" unique_id=901716685]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
-[node name="Margin" type="MarginContainer" parent="MainLayout/LeftNav/ControlsCard"]
+[node name="Margin" type="MarginContainer" parent="MainLayout/LeftNav/ControlsCard" unique_id=1252866199]
 layout_mode = 2
 theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 16
 theme_override_constants/margin_bottom = 12
 
-[node name="VBox" type="VBoxContainer" parent="MainLayout/LeftNav/ControlsCard/Margin"]
+[node name="VBox" type="VBoxContainer" parent="MainLayout/LeftNav/ControlsCard/Margin" unique_id=1040289202]
 layout_mode = 2
 theme_override_constants/separation = 6
 
-[node name="ControlsHeader" type="Label" parent="MainLayout/LeftNav/ControlsCard/Margin/VBox"]
+[node name="ControlsHeader" type="Label" parent="MainLayout/LeftNav/ControlsCard/Margin/VBox" unique_id=1545093990]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.9, 0.98, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "CONTROLS GUIDE"
 
-[node name="ControlsList" type="Label" parent="MainLayout/LeftNav/ControlsCard/Margin/VBox"]
+[node name="ControlsList" type="Label" parent="MainLayout/LeftNav/ControlsCard/Margin/VBox" unique_id=1456847287]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.68, 0.74, 0.84, 1)
 theme_override_fonts/font = ExtResource("6_font_thin")
@@ -279,15 +279,15 @@ Attack: J  or  Left Click
 Pause: Escape
 Levels: 1 / 2 / 3 keys"
 
-[node name="RightStage" type="VBoxContainer" parent="MainLayout"]
+[node name="RightStage" type="VBoxContainer" parent="MainLayout" unique_id=1810848424]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 10
 
-[node name="StageHeader" type="HBoxContainer" parent="MainLayout/RightStage"]
+[node name="StageHeader" type="HBoxContainer" parent="MainLayout/RightStage" unique_id=948529490]
 layout_mode = 2
 
-[node name="StageLabel" type="Label" parent="MainLayout/RightStage/StageHeader"]
+[node name="StageLabel" type="Label" parent="MainLayout/RightStage/StageHeader" unique_id=583265131]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
@@ -295,7 +295,7 @@ theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 12
 text = "MISSION SELECT & PREVIEW"
 
-[node name="OperativeStanceLabel" type="Label" parent="MainLayout/RightStage/StageHeader"]
+[node name="OperativeStanceLabel" type="Label" parent="MainLayout/RightStage/StageHeader" unique_id=442733822]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.8, 0.95, 1)
@@ -303,49 +303,49 @@ theme_override_fonts/font = ExtResource("6_font_thin")
 theme_override_font_sizes/font_size = 12
 text = "Animation: Idle"
 
-[node name="LevelSelectBar" type="HBoxContainer" parent="MainLayout/RightStage"]
+[node name="LevelSelectBar" type="HBoxContainer" parent="MainLayout/RightStage" unique_id=1687891711]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="BtnLevel1" type="Button" parent="MainLayout/RightStage/LevelSelectBar"]
+[node name="BtnLevel1" type="Button" parent="MainLayout/RightStage/LevelSelectBar" unique_id=1540009778]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 42)
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
-text = "LEVEL 1: GRASSLAND"
+text = "LEVEL 1: Illusion of Youth"
 
-[node name="BtnLevel2" type="Button" parent="MainLayout/RightStage/LevelSelectBar"]
+[node name="BtnLevel2" type="Button" parent="MainLayout/RightStage/LevelSelectBar" unique_id=750711172]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 42)
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
-text = "LEVEL 2: AUTUMN"
+text = "LEVEL 2: Weight of Regret"
 
-[node name="BtnLevel3" type="Button" parent="MainLayout/RightStage/LevelSelectBar"]
+[node name="BtnLevel3" type="Button" parent="MainLayout/RightStage/LevelSelectBar" unique_id=245755826]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 42)
 layout_mode = 2
 size_flags_horizontal = 3
-custom_minimum_size = Vector2(0, 42)
 mouse_default_cursor_shape = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
-text = "LEVEL 3: WINTER"
+text = "LEVEL 3: Absolute Void"
 
-[node name="ShowcaseCard" type="PanelContainer" parent="MainLayout/RightStage"]
+[node name="ShowcaseCard" type="PanelContainer" parent="MainLayout/RightStage" unique_id=2045045072]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
-[node name="ShowcaseContainer" type="Control" parent="MainLayout/RightStage/ShowcaseCard"]
+[node name="ShowcaseContainer" type="Control" parent="MainLayout/RightStage/ShowcaseCard" unique_id=68355415]
 layout_mode = 2
 
-[node name="ScenicBackdrop" type="TextureRect" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer"]
+[node name="ScenicBackdrop" type="TextureRect" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer" unique_id=778649322]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0.35)
 layout_mode = 1
@@ -362,7 +362,7 @@ texture = ExtResource("8_bg_grassland")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="ShowcasePlatform" type="Control" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer"]
+[node name="ShowcasePlatform" type="Control" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer" unique_id=869628590]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -373,16 +373,15 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("7_platform_script")
 
-[node name="OperativeSprite" type="AnimatedSprite2D" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer"]
+[node name="OperativeSprite" type="AnimatedSprite2D" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer" unique_id=1515067082]
 unique_name_in_owner = true
-texture_filter = 0
 position = Vector2(440, 195)
 scale = Vector2(0.58, 0.58)
 sprite_frames = ExtResource("4_player_frames")
 animation = &"idle"
 autoplay = "idle"
 
-[node name="BottomOverlay" type="MarginContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer"]
+[node name="BottomOverlay" type="MarginContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer" unique_id=2001720344]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -395,15 +394,15 @@ theme_override_constants/margin_left = 18
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 14
 
-[node name="HBox" type="HBoxContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay"]
+[node name="HBox" type="HBoxContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay" unique_id=1235862781]
 layout_mode = 2
 
-[node name="OperativeSpecs" type="VBoxContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox"]
+[node name="OperativeSpecs" type="VBoxContainer" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox" unique_id=2022314613]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 2
 
-[node name="LevelInfoLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs"]
+[node name="LevelInfoLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs" unique_id=1208293703]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.85, 0.55, 1)
@@ -411,21 +410,21 @@ theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "MISSION 01: GRASSLAND FRONTIER"
 
-[node name="NameLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs"]
+[node name="NameLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs" unique_id=1996955158]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.94, 0.98, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 13
 text = "Character: Ninja"
 
-[node name="LoadoutLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs"]
+[node name="LoadoutLabel" type="Label" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox/OperativeSpecs" unique_id=125889477]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.68, 0.78, 1)
 theme_override_fonts/font = ExtResource("6_font_thin")
 theme_override_font_sizes/font_size = 11
 text = "Weapons: Unarmed / Katana"
 
-[node name="BtnCycleStance" type="Button" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox"]
+[node name="BtnCycleStance" type="Button" parent="MainLayout/RightStage/ShowcaseCard/ShowcaseContainer/BottomOverlay/HBox" unique_id=355573075]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -434,7 +433,7 @@ theme_override_font_sizes/font_size = 11
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_secondary")
 text = "CHANGE ANIMATION"
 
-[node name="ModalBackdrop" type="ColorRect" parent="."]
+[node name="ModalBackdrop" type="ColorRect" parent="." unique_id=1970984429]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -445,7 +444,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.06, 0.08, 0.11, 0.8)
 
-[node name="SettingsModal" type="CenterContainer" parent="."]
+[node name="SettingsModal" type="CenterContainer" parent="." unique_id=296805941]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -455,57 +454,57 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" type="PanelContainer" parent="SettingsModal"]
+[node name="Card" type="PanelContainer" parent="SettingsModal" unique_id=449703827]
 custom_minimum_size = Vector2(520, 390)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
-[node name="Margin" type="MarginContainer" parent="SettingsModal/Card"]
+[node name="Margin" type="MarginContainer" parent="SettingsModal/Card" unique_id=130352891]
 layout_mode = 2
 theme_override_constants/margin_left = 26
 theme_override_constants/margin_top = 22
 theme_override_constants/margin_right = 26
 theme_override_constants/margin_bottom = 22
 
-[node name="VBox" type="VBoxContainer" parent="SettingsModal/Card/Margin"]
+[node name="VBox" type="VBoxContainer" parent="SettingsModal/Card/Margin" unique_id=2045292328]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Title" type="Label" parent="SettingsModal/Card/Margin/VBox"]
+[node name="Title" type="Label" parent="SettingsModal/Card/Margin/VBox" unique_id=256640026]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.92, 0.95, 1, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 17
 text = "SETTINGS"
 
-[node name="HSeparator" type="HSeparator" parent="SettingsModal/Card/Margin/VBox"]
+[node name="HSeparator" type="HSeparator" parent="SettingsModal/Card/Margin/VBox" unique_id=987535673]
 layout_mode = 2
 
-[node name="AudioSectionTitle" type="Label" parent="SettingsModal/Card/Margin/VBox"]
+[node name="AudioSectionTitle" type="Label" parent="SettingsModal/Card/Margin/VBox" unique_id=758809301]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.82, 0.95, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "AUDIO"
 
-[node name="MasterRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox"]
+[node name="MasterRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox" unique_id=477818324]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/MasterRow"]
+[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/MasterRow" unique_id=1161414615]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "Master Volume:"
 
-[node name="MasterSlider" type="HSlider" parent="SettingsModal/Card/Margin/VBox/MasterRow"]
+[node name="MasterSlider" type="HSlider" parent="SettingsModal/Card/Margin/VBox/MasterRow" unique_id=1367583588]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 100.0
 
-[node name="MasterValLabel" type="Label" parent="SettingsModal/Card/Margin/VBox/MasterRow"]
+[node name="MasterValLabel" type="Label" parent="SettingsModal/Card/Margin/VBox/MasterRow" unique_id=1130892776]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
@@ -514,24 +513,24 @@ theme_override_font_sizes/font_size = 11
 text = "100%"
 horizontal_alignment = 2
 
-[node name="SfxRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox"]
+[node name="SfxRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox" unique_id=841029971]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/SfxRow"]
+[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/SfxRow" unique_id=79088981]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "SFX Volume:"
 
-[node name="SfxSlider" type="HSlider" parent="SettingsModal/Card/Margin/VBox/SfxRow"]
+[node name="SfxSlider" type="HSlider" parent="SettingsModal/Card/Margin/VBox/SfxRow" unique_id=78704045]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 90.0
 
-[node name="SfxValLabel" type="Label" parent="SettingsModal/Card/Margin/VBox/SfxRow"]
+[node name="SfxValLabel" type="Label" parent="SettingsModal/Card/Margin/VBox/SfxRow" unique_id=574981068]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
@@ -540,36 +539,36 @@ theme_override_font_sizes/font_size = 11
 text = "90%"
 horizontal_alignment = 2
 
-[node name="MuteCheckBox" type="CheckBox" parent="SettingsModal/Card/Margin/VBox"]
+[node name="MuteCheckBox" type="CheckBox" parent="SettingsModal/Card/Margin/VBox" unique_id=1500165019]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "Mute Audio"
 
-[node name="DisplaySectionTitle" type="Label" parent="SettingsModal/Card/Margin/VBox"]
+[node name="DisplaySectionTitle" type="Label" parent="SettingsModal/Card/Margin/VBox" unique_id=517348399]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.82, 0.95, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "DISPLAY"
 
-[node name="WindowRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox"]
+[node name="WindowRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox" unique_id=559308293]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/WindowRow"]
+[node name="Label" type="Label" parent="SettingsModal/Card/Margin/VBox/WindowRow" unique_id=519522939]
 custom_minimum_size = Vector2(140, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
 theme_override_font_sizes/font_size = 11
 text = "Window Mode:"
 
-[node name="WindowOption" type="OptionButton" parent="SettingsModal/Card/Margin/VBox/WindowRow"]
+[node name="WindowOption" type="OptionButton" parent="SettingsModal/Card/Margin/VBox/WindowRow" unique_id=842563857]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VsyncCheck" type="CheckBox" parent="SettingsModal/Card/Margin/VBox"]
+[node name="VsyncCheck" type="CheckBox" parent="SettingsModal/Card/Margin/VBox" unique_id=117955837]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
@@ -577,15 +576,15 @@ theme_override_font_sizes/font_size = 11
 button_pressed = true
 text = "Enable V-Sync"
 
-[node name="Spacer" type="Control" parent="SettingsModal/Card/Margin/VBox"]
+[node name="Spacer" type="Control" parent="SettingsModal/Card/Margin/VBox" unique_id=117373187]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SettingsButtonRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox"]
+[node name="SettingsButtonRow" type="HBoxContainer" parent="SettingsModal/Card/Margin/VBox" unique_id=401637882]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="BtnResetSettings" type="Button" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow"]
+[node name="BtnResetSettings" type="Button" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow" unique_id=716999136]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_fonts/font = ExtResource("5_font_bold")
@@ -593,11 +592,11 @@ theme_override_font_sizes/font_size = 11
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_secondary")
 text = "RESET DEFAULTS"
 
-[node name="Spacer" type="Control" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow"]
+[node name="Spacer" type="Control" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow" unique_id=211672982]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="BtnCloseSettings" type="Button" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow"]
+[node name="BtnCloseSettings" type="Button" parent="SettingsModal/Card/Margin/VBox/SettingsButtonRow" unique_id=65942071]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
@@ -607,7 +606,7 @@ theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_primary")
 text = "CLOSE"
 
-[node name="QuitModal" type="CenterContainer" parent="."]
+[node name="QuitModal" type="CenterContainer" parent="." unique_id=1675497326]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1
@@ -617,23 +616,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Card" type="PanelContainer" parent="QuitModal"]
+[node name="Card" type="PanelContainer" parent="QuitModal" unique_id=114619630]
 custom_minimum_size = Vector2(400, 190)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
 
-[node name="Margin" type="MarginContainer" parent="QuitModal/Card"]
+[node name="Margin" type="MarginContainer" parent="QuitModal/Card" unique_id=1781892814]
 layout_mode = 2
 theme_override_constants/margin_left = 26
 theme_override_constants/margin_top = 22
 theme_override_constants/margin_right = 26
 theme_override_constants/margin_bottom = 22
 
-[node name="VBox" type="VBoxContainer" parent="QuitModal/Card/Margin"]
+[node name="VBox" type="VBoxContainer" parent="QuitModal/Card/Margin" unique_id=1459863776]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Title" type="Label" parent="QuitModal/Card/Margin/VBox"]
+[node name="Title" type="Label" parent="QuitModal/Card/Margin/VBox" unique_id=113471386]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.5, 0.5, 1)
 theme_override_fonts/font = ExtResource("5_font_bold")
@@ -641,7 +640,7 @@ theme_override_font_sizes/font_size = 16
 text = "QUIT GAME"
 horizontal_alignment = 1
 
-[node name="Msg" type="Label" parent="QuitModal/Card/Margin/VBox"]
+[node name="Msg" type="Label" parent="QuitModal/Card/Margin/VBox" unique_id=1874224684]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.85, 0.92, 1)
 theme_override_fonts/font = ExtResource("6_font_thin")
@@ -650,15 +649,15 @@ text = "Are you sure you want to exit the game?"
 horizontal_alignment = 1
 autowrap_mode = 2
 
-[node name="Spacer" type="Control" parent="QuitModal/Card/Margin/VBox"]
+[node name="Spacer" type="Control" parent="QuitModal/Card/Margin/VBox" unique_id=2092649094]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="ButtonRow" type="HBoxContainer" parent="QuitModal/Card/Margin/VBox"]
+[node name="ButtonRow" type="HBoxContainer" parent="QuitModal/Card/Margin/VBox" unique_id=1805907535]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="BtnCancelQuit" type="Button" parent="QuitModal/Card/Margin/VBox/ButtonRow"]
+[node name="BtnCancelQuit" type="Button" parent="QuitModal/Card/Margin/VBox/ButtonRow" unique_id=476835211]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -667,7 +666,7 @@ theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_secondary")
 text = "CANCEL"
 
-[node name="BtnConfirmQuit" type="Button" parent="QuitModal/Card/Margin/VBox/ButtonRow"]
+[node name="BtnConfirmQuit" type="Button" parent="QuitModal/Card/Margin/VBox/ButtonRow" unique_id=1486949777]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -676,19 +675,18 @@ theme_override_font_sizes/font_size = 12
 theme_override_styles/normal = SubResource("StyleBoxFlat_btn_danger")
 text = "QUIT"
 
-[node name="TransitionLayer" type="CanvasLayer" parent="."]
+[node name="TransitionLayer" type="CanvasLayer" parent="." unique_id=769995997]
 unique_name_in_owner = true
 layer = 120
 
-[node name="ShutterTop" type="ColorRect" parent="TransitionLayer"]
+[node name="ShutterTop" type="ColorRect" parent="TransitionLayer" unique_id=520854274]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1280, 362)
 offset_top = -362.0
 offset_right = 1280.0
-offset_bottom = 0.0
 color = Color(0.09, 0.11, 0.15, 1)
 
-[node name="ShutterBottom" type="ColorRect" parent="TransitionLayer"]
+[node name="ShutterBottom" type="ColorRect" parent="TransitionLayer" unique_id=565193796]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1280, 362)
 offset_top = 720.0
@@ -696,7 +694,7 @@ offset_right = 1280.0
 offset_bottom = 1082.0
 color = Color(0.09, 0.11, 0.15, 1)
 
-[node name="ShutterLine" type="ColorRect" parent="TransitionLayer"]
+[node name="ShutterLine" type="ColorRect" parent="TransitionLayer" unique_id=1682404015]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0)
 anchors_preset = 14
@@ -709,7 +707,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.38, 0.62, 0.95, 1)
 
-[node name="TransitionContent" type="VBoxContainer" parent="TransitionLayer"]
+[node name="TransitionContent" type="VBoxContainer" parent="TransitionLayer" unique_id=1751787276]
 unique_name_in_owner = true
 modulate = Color(1, 1, 1, 0)
 anchors_preset = 8
@@ -725,7 +723,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 12
 
-[node name="LoadingLabel" type="Label" parent="TransitionLayer/TransitionContent"]
+[node name="LoadingLabel" type="Label" parent="TransitionLayer/TransitionContent" unique_id=1655518594]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.94, 1, 1)
@@ -734,7 +732,7 @@ theme_override_font_sizes/font_size = 14
 text = "ENTERING GAME..."
 horizontal_alignment = 1
 
-[node name="TransitionBar" type="ProgressBar" parent="TransitionLayer/TransitionContent"]
+[node name="TransitionBar" type="ProgressBar" parent="TransitionLayer/TransitionContent" unique_id=346458580]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2

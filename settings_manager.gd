@@ -13,6 +13,7 @@ static var vsync_enabled: bool = true
 static var target_fps: int = 60 # 0 = unlimited, 60, 120, 144
 static var screen_shake: bool = true
 static var show_timer: bool = true
+static var controller_vibration: bool = true
 
 # Equipment & Session persistence across levels
 static var has_katana: bool = false
@@ -35,6 +36,7 @@ static func load_settings() -> void:
 		
 		screen_shake = cfg.get_value("gameplay", "screen_shake", true)
 		show_timer = cfg.get_value("gameplay", "show_timer", true)
+		controller_vibration = cfg.get_value("gameplay", "controller_vibration", true)
 	
 	apply_all_settings()
 
@@ -51,6 +53,7 @@ static func save_settings() -> void:
 	
 	cfg.set_value("gameplay", "screen_shake", screen_shake)
 	cfg.set_value("gameplay", "show_timer", show_timer)
+	cfg.set_value("gameplay", "controller_vibration", controller_vibration)
 	
 	cfg.save(SAVE_PATH)
 

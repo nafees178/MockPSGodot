@@ -19,21 +19,28 @@ func _ready() -> void:
 	btn_menu.pressed.connect(go_to_menu)
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_ESCAPE:
-			if visible:
-				resume()
-			else:
-				pause()
-		elif visible:
+	if event.is_action_pressed("pause") or (event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE) or (event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_START):
+		if visible:
+			resume()
+		else:
+			pause()
+		get_viewport().set_input_as_handled()
+	elif visible:
+		if event is InputEventKey and event.pressed and not event.echo:
 			if event.keycode == KEY_M:
 				go_to_menu()
 			elif event.keycode == KEY_R:
 				restart()
+		elif event is InputEventJoypadButton and event.pressed:
+			if event.button_index == JOY_BUTTON_B:
+				resume()
+				get_viewport().set_input_as_handled()
 
 func pause() -> void:
 	visible = true
 	get_tree().paused = true
+	if btn_resume:
+		btn_resume.grab_focus()
 
 func resume() -> void:
 	visible = false
@@ -85,3 +92,4 @@ func _style_button(btn: Button, font: Font, is_primary: bool) -> void:
 	sb_hover.content_margin_top = 9
 	sb_hover.content_margin_bottom = 9
 	btn.add_theme_stylebox_override("hover", sb_hover)
+	btn.add_theme_stylebox_override("focus", sb_hover)
